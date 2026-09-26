@@ -1,0 +1,215 @@
+/*
+  Inner class names stay global because the animation selects them:
+  .faq-message, .typing-indicator, .faq-content p, and the message's parent row.
+*/
+
+.faq {
+  --faq-bg: #d3c5f7;
+  --faq-ink: #13072e;
+  --faq-lime: #c4ec3b;
+  --faq-line: rgb(19 7 46 / 0.18);
+
+  position: relative;
+  overflow-x: clip;
+  padding: clamp(4rem, 12vw, 10rem) clamp(1rem, 5vw, 5rem);
+  background: var(--faq-bg);
+  color: var(--faq-ink);
+  font-family: var(--faq-font-body), sans-serif;
+}
+
+.title {
+  max-width: 72rem;
+  margin: 0 auto clamp(3rem, 8vw, 6rem);
+  font-family: var(--faq-font-display), sans-serif;
+  font-size: clamp(3.25rem, 12vw, 10rem);
+  font-weight: 800;
+  line-height: 0.85;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.title span {
+  display: block;
+  padding-left: 0.6em;
+}
+
+.faq :global(.faq-container) {
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.faq :global(.faq-item) {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-block: clamp(2rem, 5vw, 3.5rem);
+  border-top: 1px dashed var(--faq-line);
+}
+
+.faq :global(.faq-row) {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.faq :global(.faq-question-slot) {
+  justify-content: flex-end;
+}
+
+/* --- Messages --- */
+
+.faq :global(.faq-message) {
+  position: relative;
+  overflow: hidden;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: min(40rem, 100%);
+  padding: 1.5rem 2rem; /* must match the padding the expand animation restores */
+  border-radius: 2rem;
+}
+
+.faq :global(.faq-question) {
+  background: var(--faq-lime);
+  box-shadow: inset 0 0 0 1.5px var(--faq-ink);
+  transform-origin: 100% 100%;
+}
+
+.faq :global(.faq-answer) {
+  background: var(--faq-ink);
+  color: var(--faq-bg);
+  transform-origin: 0% 100%;
+}
+
+.faq :global(.faq-content) {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+}
+
+.faq :global(.faq-content p) {
+  margin: 0;
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.25rem);
+  font-weight: 700;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.faq :global(.faq-content a) {
+  color: var(--faq-lime);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* Hide messages until the animation has collapsed them, to avoid a flash. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .faq :global(.faq-container:not(.is-ready)) :global(.faq-message),
+  .faq :global(.faq-container:not(.is-ready)) :global(.faq-avatar) {
+    visibility: hidden;
+  }
+}
+
+/* --- Typing indicator (visible while the message is a 64px circle) --- */
+
+.faq :global(.typing-indicator) {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  visibility: hidden; /* the animation controls it; hidden when there's no animation */
+}
+
+.faq :global(.faq-container.is-ready) :global(.typing-indicator) {
+  visibility: visible;
+}
+
+.faq :global(.typing-indicator span) {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.35;
+  animation: faq-typing 1s infinite ease-in-out;
+}
+
+.faq :global(.typing-indicator span:nth-child(2)) {
+  animation-delay: 0.15s;
+}
+
+.faq :global(.typing-indicator span:nth-child(3)) {
+  animation-delay: 0.3s;
+}
+
+/* Stop the dot loop once GSAP hides the indicator (autoAlpha sets inline visibility). */
+.faq :global(.typing-indicator[style*="hidden"] span) {
+  animation: none;
+}
+
+@keyframes faq-typing {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+/* --- Avatars --- */
+
+.faq :global(.faq-avatar) {
+  flex-shrink: 0;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.faq :global(.faq-avatar-you) {
+  position: relative;
+  padding: 0.45rem 0.85rem;
+  border: 1.5px solid var(--faq-ink);
+  border-radius: 999px;
+  background: var(--faq-lime);
+  font-size: 0.875rem;
+}
+
+/* Small cursor arrow, echoing a pointer "typing" the question. */
+.faq :global(.faq-avatar-you)::before {
+  content: "";
+  position: absolute;
+  top: -0.9rem;
+  left: -0.5rem;
+  width: 1rem;
+  height: 1rem;
+  background: var(--faq-ink);
+  clip-path: polygon(0 0, 100% 45%, 50% 55%, 40% 100%);
+}
+
+.faq :global(.faq-avatar-me) {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--faq-ink);
+  color: var(--faq-lime);
+  font-family: var(--faq-font-display), sans-serif;
+  font-size: 1.25rem;
+}
+
+@media (max-width: 40rem) {
+  .faq :global(.faq-avatar-you) {
+    font-size: 0.75rem;
+  }
+
+  .faq :global(.faq-avatar-me) {
+    width: 2rem;
+    height: 2rem;
+    font-size: 1rem;
+  }
+}
