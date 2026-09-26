@@ -12,6 +12,8 @@
   position: relative;
   overflow-x: clip;
   padding: clamp(4rem, 12vw, 10rem) clamp(1rem, 5vw, 5rem);
+  /* room for the last messages to reach their scroll triggers (75% of the viewport) */
+  padding-bottom: max(clamp(4rem, 12vw, 10rem), 40svh);
   background: var(--faq-bg);
   color: var(--faq-ink);
   font-family: var(--faq-font-body), sans-serif;
