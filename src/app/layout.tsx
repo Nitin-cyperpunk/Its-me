@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import SmoothScroll from "@/components/smooth-scroll/SmoothScroll";
 import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
@@ -75,6 +76,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
           }}
         />
+        <SmoothScroll />
         {children}
       </body>
     </html>

@@ -14,6 +14,8 @@ export const siteConfig = {
 
   twitterHandle: "@your-handle", // PLACEHOLDER: your X/Twitter handle (or remove)
 
+  email: "hello@example.com", // PLACEHOLDER: your contact email (footer CTA)
+
   // PLACEHOLDER: your public profile URLs (used in JSON-LD "sameAs")
   socials: [
     "https://github.com/your-username",

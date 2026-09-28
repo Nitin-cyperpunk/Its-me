@@ -10,6 +10,11 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* footer scene */
+  --color-night: #07051a;
+  --color-mist: #f3efff;
+  --color-lime: #c4ec3b;
 }
 
 @media (prefers-color-scheme: dark) {

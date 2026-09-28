@@ -6,7 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Ported from src/faq/main.js — same timelines, triggers and timings.
+// Ported from the original vanilla prototype — same timelines, triggers and timings.
 // Only typos were fixed; additions are marked "port:".
 function animateMessages(root: HTMLElement) {
   root.querySelectorAll<HTMLElement>(".faq-message").forEach((message) => {
