@@ -19,6 +19,8 @@ export const siteConfig = {
   jobTitle: "Software Developer", // PLACEHOLDER: your job title
   keywords: ["portfolio", "developer"], // PLACEHOLDER: add relevant keywords
   locale: "en_US",
+  // Timezone for the footer's live clock — always shown in this zone, not the visitor's.
+  timeZone: "Asia/Kolkata",
 
   twitterHandle: "@your-handle", // PLACEHOLDER: your X/Twitter handle (or remove)
 

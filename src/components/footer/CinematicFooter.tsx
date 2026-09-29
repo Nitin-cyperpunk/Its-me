@@ -1,6 +1,9 @@
 import { Barlow_Condensed, Host_Grotesk } from "next/font/google";
+import { headers } from "next/headers";
 import { siteConfig } from "@/lib/site";
+import { VISITOR_HEADER } from "@/lib/visitor";
 import FooterScene from "./FooterScene";
+import VisitorInfo from "./VisitorInfo";
 
 // Same faces as the FAQ so the ending reads as part of the same piece.
 const display = Barlow_Condensed({
@@ -34,9 +37,18 @@ const primaryButton = `${button} border-lime bg-lime text-[#13072e] hover:border
 // mask for each line's reveal; the padding keeps descenders from being clipped
 const line = "-my-[0.04em] block overflow-hidden py-[0.04em]";
 
-// Content is server-rendered; only FooterScene (the landscape + motion) ships JS.
-// data-cta / data-cta-line are the hooks FooterScene animates — keep them.
-export default function CinematicFooter() {
+// Set by src/proxy.ts after it has verified or assigned the number.
+async function getVisitorNumber() {
+  const n = Number((await headers()).get(VISITOR_HEADER));
+  return Number.isSafeInteger(n) && n > 0 ? n : null;
+}
+
+// Content is server-rendered; only FooterScene (the landscape + motion) and
+// the live clock ship JS. data-cta / data-cta-line are the hooks FooterScene
+// animates — keep them.
+export default async function CinematicFooter() {
+  const visitorNumber = await getVisitorNumber();
+
   return (
     <FooterScene
       className={`${display.variable} ${body.variable} relative isolate flex min-h-[max(100svh,40rem)] flex-col overflow-clip bg-night font-[family-name:var(--footer-font-body)] text-mist lg:min-h-[max(115svh,44rem)]`}
@@ -90,8 +102,13 @@ export default function CinematicFooter() {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-4 border-t border-mist/15 pt-5 text-sm text-mist/60">
-          <nav aria-label="Contact" className="flex flex-wrap gap-x-6 gap-y-2">
+        {/* stacked and centred on phones; nav | visitor | © from md up */}
+        <div className="grid items-center gap-x-8 gap-y-4 border-t border-mist/15 pt-5 text-sm text-mist/60 md:grid-cols-[1fr_auto_1fr]">
+          <VisitorInfo visitorNumber={visitorNumber} className="md:col-start-2 md:row-start-1" />
+          <nav
+            aria-label="Contact"
+            className="flex flex-wrap justify-center gap-x-6 gap-y-2 md:col-start-1 md:row-start-1 md:justify-start"
+          >
             {links.map((link) => (
               <a
                 key={link.label}
@@ -105,7 +122,7 @@ export default function CinematicFooter() {
               </a>
             ))}
           </nav>
-          <p>
+          <p className="text-center md:col-start-3 md:row-start-1 md:text-right">
             © {new Date().getFullYear()} {siteConfig.name}
           </p>
         </div>

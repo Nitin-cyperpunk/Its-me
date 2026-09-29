@@ -124,6 +124,11 @@ function animateFooter(root: HTMLElement, motion: Motion, touch: boolean) {
     { yPercent: 105 },
     { yPercent: 0, ease: "power3.out", duration: 0.3, stagger: 0.06 },
     0.56,
+  ).fromTo(
+    q("[data-visitor]"),
+    { y: 15, autoAlpha: 0 },
+    { y: 0, autoAlpha: 1, ease: "power2.out", duration: 0.2 },
+    0.78,
   );
 
   // Pointer parallax: front layers travel further than back ones.
