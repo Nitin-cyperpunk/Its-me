@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/lib/site";
 
-// Add an entry here for each new page you create.
+// The site has one public route today. Add an entry here for each new page
+// (sections on the home page, like a future #projects, don't get entries).
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {

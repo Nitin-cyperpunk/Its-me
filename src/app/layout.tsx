@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { JsonLd } from "@/components/seo/JsonLd";
 import SmoothScroll from "@/components/smooth-scroll/SmoothScroll";
-import { siteConfig } from "@/lib/site";
+import { publicProfiles, siteConfig } from "@/lib/site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,29 +19,36 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
     default: siteConfig.title,
-    template: `%s | ${siteConfig.name}`,
+    template: `%s — ${siteConfig.name}`,
   },
   description: siteConfig.description,
   keywords: siteConfig.keywords,
   authors: [{ name: siteConfig.name, url: siteConfig.url }],
   creator: siteConfig.name,
+  publisher: siteConfig.name,
   alternates: {
     canonical: "/",
   },
+  // The share image is src/app/opengraph-image.tsx (file-based metadata wins
+  // over an `images` field here). To use a designed PNG instead, delete that
+  // file and add src/app/opengraph-image.png at 1200×630.
   openGraph: {
     type: "website",
     locale: siteConfig.locale,
     url: "/",
     siteName: siteConfig.name,
     title: siteConfig.title,
-    description: siteConfig.description,
+    description: siteConfig.shareDescription,
   },
   twitter: {
     card: "summary_large_image",
     title: siteConfig.title,
-    description: siteConfig.description,
-    creator: siteConfig.twitterHandle,
+    description: siteConfig.shareDescription,
   },
+  // Favicon: src/app/favicon.ico is picked up by the file convention.
+  // Google Search Console: if you verify with the HTML-tag method, add
+  //   verification: { google: "<token from Search Console>" },
+  // (not needed when verifying with the DNS record for nitinverse.me).
   robots: {
     index: true,
     follow: true,
@@ -54,13 +62,24 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = {
+const person = {
   "@context": "https://schema.org",
   "@type": "Person",
+  "@id": `${siteConfig.url}/#person`,
   name: siteConfig.name,
   url: siteConfig.url,
   jobTitle: siteConfig.jobTitle,
-  sameAs: siteConfig.socials,
+  ...(publicProfiles.length > 0 && { sameAs: publicProfiles }),
+};
+
+const website = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${siteConfig.url}/#website`,
+  name: siteConfig.name,
+  url: siteConfig.url,
+  inLanguage: "en",
+  author: { "@id": person["@id"] },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -70,12 +89,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col font-sans">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
-          }}
-        />
+        <JsonLd data={person} />
+        <JsonLd data={website} />
         <SmoothScroll />
         {children}
       </body>

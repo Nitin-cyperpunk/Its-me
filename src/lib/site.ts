@@ -1,34 +1,52 @@
 // Central SEO / site configuration.
-// TODO: Replace every value marked "PLACEHOLDER" with your real information.
-
-// Falls back when the variable is unset *or empty* (an empty value in the
-// hosting dashboard crashes `new URL()`), and accepts a bare domain.
-function siteUrl() {
-  const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-  if (!raw) return "http://localhost:3000";
-  return /^https?:\/\//.test(raw) ? raw : `https://${raw}`;
-}
 
 export const siteConfig = {
-  // Set NEXT_PUBLIC_SITE_URL in .env.local (dev) and in your hosting provider (prod).
-  url: siteUrl(),
+  // The one canonical origin: metadataBase, canonical, Open Graph, sitemap,
+  // robots and JSON-LD all derive from it. Hardcoded rather than read from an
+  // env var so a preview deployment (*.vercel.app) or a www alias can never
+  // leak into canonical URLs.
+  url: "https://nitinverse.me",
 
-  name: "Nitin Singh", // PLACEHOLDER: your full name
-  title: "Nitin Singh | Portfolio", // PLACEHOLDER: default page title
-  description: "Your portfolio description", // PLACEHOLDER
-  jobTitle: "Software Developer", // PLACEHOLDER: your job title
-  keywords: ["portfolio", "developer"], // PLACEHOLDER: add relevant keywords
+  name: "Nitin Singh",
+  title: "Nitin Singh — Full Stack Developer",
+  description:
+    "Nitin Singh is a Full Stack Developer building web products, AI experiments, and automation systems.",
+  // Link previews (Open Graph / X) already show the name as the title.
+  shareDescription:
+    "Full Stack Developer building web products, AI experiments, and automation systems.",
+  jobTitle: "Full Stack Developer",
+  keywords: [
+    "Nitin Singh",
+    "Full Stack Developer",
+    "web development",
+    "mobile development",
+    "SaaS",
+    "AI",
+    "automation",
+    "Next.js",
+    "React",
+    "TypeScript",
+    "Node.js",
+    "Supabase",
+    "PostgreSQL",
+    "n8n",
+  ],
   locale: "en_US",
   // Timezone for the footer's live clock — always shown in this zone, not the visitor's.
   timeZone: "Asia/Kolkata",
 
-  twitterHandle: "@your-handle", // PLACEHOLDER: your X/Twitter handle (or remove)
-
   email: "hello@example.com", // PLACEHOLDER: your contact email (footer CTA)
 
-  // PLACEHOLDER: your public profile URLs (used in JSON-LD "sameAs")
+  // PLACEHOLDER: your public profile URLs (footer buttons, and JSON-LD "sameAs"
+  // once they're real — see publicProfiles below).
   socials: [
-    "https://github.com/your-username",
-    "https://www.linkedin.com/in/your-username",
+    "https://github.com/nitin-cyperpunk",
+    "https://www.https://www.linkedin.com/in/itsnitinsingh66/",
   ],
 };
+
+// Profiles safe to publish as structured data: the placeholders above are
+// filtered out, so real URLs start appearing in "sameAs" as soon as they're filled in.
+export const publicProfiles = siteConfig.socials.filter(
+  (url) => !url.includes("your-username"),
+);

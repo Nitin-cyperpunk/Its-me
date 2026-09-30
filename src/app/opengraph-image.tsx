@@ -17,14 +17,20 @@ export default function OpengraphImage() {
           width: "100%",
           height: "100%",
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "#ffffff",
-          color: "#171717",
-          fontSize: 72,
+          gap: 20,
+          // the hero's cream desk and ink
+          background: "#f7f3ea",
+          color: "#2a2521",
         }}
       >
-        {siteConfig.name}
+        <div style={{ fontSize: 96, fontWeight: 700 }}>{siteConfig.name}</div>
+        <div style={{ fontSize: 40, color: "#5b4bc4" }}>{siteConfig.jobTitle}</div>
+        <div style={{ marginTop: 24, fontSize: 28, color: "rgba(42, 37, 33, 0.6)" }}>
+          {new URL(siteConfig.url).host}
+        </div>
       </div>
     ),
     size,
