@@ -421,11 +421,12 @@ export const heroAssets: HeroAsset[] = [
 
 export const heroMotion = {
   entrance: {
-    /** Seconds. The desk fades in at 0. */
-    name: 0.2,
-    text: 0.35,
-    controls: 1.2,
-    decor: 1.3,
+    /** Seconds from the reveal. The desk fades in at 0 (under the intro's glass),
+        the objects land, then the name, the lines under it and the controls. */
+    name: 1.95,
+    text: 2.1,
+    controls: 2.35,
+    decor: 2.45,
     /** Delay between objects that share a group. */
     stagger: 0.07,
     /** Every object starts this far below, this small, at a random tilt up to `tilt`°. */

@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { Draggable } from "gsap/Draggable";
 import { InertiaPlugin } from "gsap/InertiaPlugin";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { intro } from "@/lib/intro";
 import { heroAssets, heroMotion, type Pose } from "./hero-assets";
 import { DEFAULT_MODE, heroModes, modeMotion, type HeroMode } from "./hero-modes";
 
@@ -263,6 +264,19 @@ function setupHero(root: HTMLElement, setup: Setup) {
         group.at + index * entrance.stagger,
       );
     });
+
+    // Under the terminal intro the desk waits, then assembles as the glass clears.
+    if (intro.holdsEntrance()) {
+      tl.pause();
+      const stopWaiting = intro.subscribe(() => {
+        if (intro.phase === "pending") return;
+        stopWaiting();
+        tl.timeScale(intro.timeScale).play();
+      });
+      cleanups.push(stopWaiting);
+    } else if (intro.phase === "reveal") {
+      tl.timeScale(intro.timeScale);
+    }
   }
   // start states are in place, so the CSS guard can let go
   root.classList.add("is-ready");

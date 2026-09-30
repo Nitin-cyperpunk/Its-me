@@ -1,0 +1,318 @@
+/*
+  Layers, back to front:
+    glass     blurs the real page underneath (hidden behind the backdrop until phase 9)
+    backdrop  the dark room the terminal sits in
+    window    the terminal itself
+    skip      the way out
+*/
+
+.intro {
+  --intro-bg: #050505;
+  --term-bg: #0b0b0b;
+  --term-text: #e8e6e3;
+  --term-dim: rgb(232 230 227 / 0.45);
+  --term-green: #86d99a;
+  --term-purple: #b3a6ff;
+  --term-line: rgb(255 255 255 / 0.08);
+  --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  overflow: hidden;
+  color: var(--term-text);
+  font-family: var(--intro-font-mono), ui-monospace, monospace;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Without JavaScript there's no intro, just the page. */
+@media (scripting: none) {
+  .intro {
+    display: none;
+  }
+}
+
+/* If the script never arrives, don't leave visitors in the dark. */
+.intro:not(:global(.is-running)) {
+  animation: intro-failsafe 0.6s 15s forwards;
+}
+
+@keyframes intro-failsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* --- Glass: a physical pane over the page, blurring it until it sharpens --- */
+
+.glass {
+  --glass-blur: 14px;
+  --glass-tint: 0.45;
+
+  position: absolute;
+  inset: 0;
+  background: rgb(10 10 15 / var(--glass-tint));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--intro-bg);
+}
+
+.backdrop::after,
+.window::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--grain);
+  opacity: 0.045;
+  pointer-events: none;
+}
+
+/* --- The terminal window --- */
+
+.window {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(46rem, 100%);
+  height: min(31rem, 72svh);
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: 0.75rem;
+  background-color: var(--term-bg);
+  box-shadow:
+    0 30px 100px rgb(0 0 0 / 0.5),
+    0 0 80px rgb(179 166 255 / 0.05),
+    inset 0 1px 0 rgb(255 255 255 / 0.05);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  /* GSAP fades it in */
+  opacity: 0;
+  visibility: hidden;
+}
+
+.window::before {
+  opacity: 0.03;
+}
+
+.titlebar {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  height: 2.25rem;
+  padding-inline: 0.9rem;
+  border-bottom: 1px solid var(--term-line);
+}
+
+.lights {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.lights i {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  opacity: 0.85;
+}
+
+.lights i:nth-child(1) {
+  background: #ff5f57;
+}
+
+.lights i:nth-child(2) {
+  background: #febc2e;
+}
+
+.lights i:nth-child(3) {
+  background: #28c840;
+}
+
+.title {
+  position: absolute;
+  left: 50%;
+  translate: -50% 0;
+  color: var(--term-dim);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+.body {
+  flex: 1;
+  overflow: hidden;
+  padding: 1rem 1.25rem 1.25rem;
+  font-size: clamp(0.66rem, 2.5vw, 0.84rem);
+  line-height: 1.7;
+}
+
+/* Every line waits offstage until the timeline prints it. */
+.line {
+  display: none;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.command {
+  margin-top: 0.6em;
+}
+
+.command:first-child {
+  margin-top: 0;
+}
+
+.user {
+  color: var(--term-green);
+}
+
+.path {
+  color: var(--term-purple);
+}
+
+.dim,
+.stamp,
+.note {
+  color: var(--term-dim);
+}
+
+.label {
+  color: var(--term-purple);
+}
+
+.accent {
+  color: var(--term-purple);
+}
+
+.check,
+.success {
+  color: var(--term-green);
+}
+
+.check {
+  display: inline-block;
+}
+
+.cursor {
+  display: none;
+  width: 0.55em;
+  height: 1.15em;
+  margin-left: 0.15em;
+  vertical-align: text-bottom;
+  background: var(--term-text);
+  animation: blink 1.05s steps(1) infinite;
+}
+
+.line[data-active] .cursor {
+  display: inline-block;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ████████ 100% — block characters drawn with a gradient, filled by GSAP */
+.progress {
+  display: inline-block;
+  width: min(20rem, 55%);
+  height: 0.85em;
+  margin-right: 0.8em;
+  vertical-align: -0.08em;
+  background: rgb(255 255 255 / 0.06);
+}
+
+.progressFill {
+  display: block;
+  height: 100%;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--term-green) 0 0.5em,
+    transparent 0.5em 0.62em
+  );
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.identity {
+  max-width: 24rem;
+  margin: 0.8em 0 0.6em;
+  padding: 1.2em 1em;
+  border: 1px solid rgb(179 166 255 / 0.45);
+  border-radius: 2px;
+  text-align: center;
+  white-space: normal;
+}
+
+.identityName {
+  display: block;
+  margin-right: -0.55em;
+  color: #fff;
+  font-size: 1.3em;
+  font-weight: 600;
+  letter-spacing: 0.55em;
+}
+
+.identityName span {
+  display: inline-block;
+}
+
+.identityTagline {
+  display: block;
+  margin-top: 0.7em;
+  margin-right: -0.3em;
+  color: var(--term-dim);
+  font-size: 0.85em;
+  letter-spacing: 0.3em;
+}
+
+/* --- Skip --- */
+
+.skip {
+  position: absolute;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  padding: 0.5rem 0.25rem;
+  border: 0;
+  background: none;
+  color: var(--term-dim);
+  font: inherit;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.skip:hover {
+  color: var(--term-text);
+}
+
+.skip:focus-visible {
+  outline: 1px solid var(--term-purple);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .title,
+  .backdrop::after,
+  .window::before {
+    display: none;
+  }
+
+  .window {
+    height: min(34rem, 78svh);
+  }
+
+  .body {
+    padding: 0.8rem 0.9rem 1rem;
+  }
+}

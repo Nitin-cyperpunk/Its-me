@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import "lenis/dist/lenis.css";
+import { intro } from "@/lib/intro";
 
 gsap.registerPlugin(ScrollTrigger);
 // Mobile browsers resize the viewport when the address bar shows/hides;
@@ -27,7 +28,13 @@ export default function SmoothScroll() {
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
 
+    // paused while the terminal intro covers the page
+    const syncWithIntro = () => (intro.locksScroll() ? lenis.stop() : lenis.start());
+    syncWithIntro();
+    const stopListening = intro.subscribe(syncWithIntro);
+
     return () => {
+      stopListening();
       gsap.ticker.remove(tick);
       gsap.ticker.lagSmoothing(500, 33); // GSAP's default
       lenis.destroy();
