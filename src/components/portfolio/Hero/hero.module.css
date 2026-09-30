@@ -1,0 +1,539 @@
+/* Light only. A warm cream desk; the artwork is a faint texture, never a backdrop. */
+
+.hero {
+  --hero-bg: #f7f3ea;
+  --hero-ink: #2a2521;
+  --hero-muted: rgb(42 37 33 / 0.68);
+  --hero-accent: #5b4bc4;
+  --hero-paper: #fffdf7;
+  --hero-line: rgb(42 37 33 / 0.16);
+  --hero-sticky: #f8e68c;
+  --hero-tape: rgb(233 222 184 / 0.82);
+  --hero-shadow: rgb(60 40 15 / 0.18);
+
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  min-height: max(100svh, 46rem);
+  background: var(--hero-bg);
+  color: var(--hero-ink);
+  color-scheme: light;
+  font-family: var(--hero-font-mono), monospace;
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    height: 100svh;
+    min-height: 40rem;
+  }
+}
+
+/*
+  Until the entrance has set its start states, keep its targets out of sight.
+  Done as a delayed animation rather than a plain rule so that if the script
+  never arrives, the desk still shows up on its own after a few seconds.
+*/
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .hero:not(:global(.is-ready)) [data-enter] {
+    animation: hero-failsafe 1ms 4s both;
+  }
+}
+
+@keyframes hero-failsafe {
+  from {
+    visibility: hidden;
+  }
+  to {
+    visibility: visible;
+  }
+}
+
+/* --- Desk --- */
+
+/* slightly oversized so pointer parallax never exposes an edge */
+.bg {
+  position: absolute;
+  inset: -4%;
+  z-index: 0;
+}
+
+.bg img {
+  object-fit: cover;
+  opacity: 0.4;
+  user-select: none;
+}
+
+/* a pool of clean paper behind the words, so the texture never competes with them */
+.wash {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 46% 50% at 50% 50%,
+    var(--hero-bg) 30%,
+    rgb(247 243 234 / 0) 100%
+  );
+}
+
+/* --- Words: always on top of the desk and never in the way of a drag --- */
+
+.text {
+  position: absolute;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4.5rem 1.25rem 0;
+  text-align: center;
+  pointer-events: none;
+}
+
+.name {
+  font-family: var(--hero-font-script), cursive;
+  font-size: clamp(3.75rem, 17vw, 6.5rem);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.underline {
+  width: min(62%, 17rem);
+  height: auto;
+  margin-top: -0.15rem;
+  color: var(--hero-accent);
+}
+
+.role {
+  margin-top: 1rem;
+  font-size: clamp(0.95rem, 1.15vw, 1.1rem);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.tagline {
+  margin-top: 0.5rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--hero-muted);
+}
+
+.tagline span {
+  margin-inline: 0.7em;
+  color: var(--hero-accent);
+}
+
+.intro {
+  max-width: 27rem;
+  margin-top: 1.1rem;
+  font-size: clamp(0.82rem, 0.95vw, 0.92rem);
+  line-height: 1.65;
+  color: var(--hero-muted);
+  text-wrap: balance;
+}
+
+@media (min-width: 1024px) {
+  .text {
+    justify-content: center;
+    padding: 0 0 3svh;
+  }
+
+  .name {
+    font-size: clamp(3.75rem, 7.6vw, 7.25rem);
+  }
+}
+
+/* --- Controls: four small keys sitting on the desk --- */
+
+.controls {
+  position: relative;
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1.6rem;
+  pointer-events: auto;
+}
+
+.control {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--hero-line);
+  border-radius: 0.65rem;
+  background: var(--hero-paper);
+  color: var(--hero-ink);
+  box-shadow:
+    0 3px 0 rgb(42 37 33 / 0.16),
+    0 10px 16px rgb(60 40 15 / 0.08);
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.control svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.control:hover {
+  transform: translateY(-1px);
+}
+
+/* the active key stays pressed in */
+.control[aria-pressed="true"] {
+  transform: translateY(2px);
+  border-color: var(--hero-accent);
+  background: color-mix(in srgb, var(--hero-accent) 12%, var(--hero-paper));
+  color: var(--hero-accent);
+  box-shadow: 0 1px 0 rgb(42 37 33 / 0.16);
+}
+
+.control:focus-visible {
+  outline: 2px solid var(--hero-accent);
+  outline-offset: 3px;
+}
+
+.control::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: calc(100% + 0.55rem);
+  left: 50%;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.3rem;
+  background: var(--hero-ink);
+  color: var(--hero-paper);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  translate: -50% 0.25rem;
+  pointer-events: none;
+  transition:
+    opacity 0.18s ease,
+    translate 0.18s ease;
+}
+
+.control:focus-visible::after {
+  opacity: 1;
+  translate: -50% 0;
+}
+
+/* touch screens keep :hover after a tap, which would leave the label stuck */
+@media (hover: hover) {
+  .control:hover::after {
+    opacity: 1;
+    translate: -50% 0;
+  }
+}
+
+/* handwritten nudge with an arrow back toward the keys */
+.controlsNote {
+  display: none;
+  position: absolute;
+  top: calc(100% + 1.1rem);
+  left: 58%;
+  align-items: flex-start;
+  gap: 0.3rem;
+  color: var(--hero-muted);
+  font-family: var(--hero-font-script), cursive;
+  font-size: 1.35rem;
+  line-height: 1;
+  white-space: nowrap;
+  rotate: -5deg;
+  pointer-events: none;
+}
+
+.controlsNote svg {
+  width: 2.6rem;
+  height: auto;
+  margin-top: -0.5rem;
+  color: var(--hero-accent);
+}
+
+.controlsNote span {
+  margin-top: 0.7rem;
+}
+
+@media (min-width: 1024px) {
+  .controlsNote {
+    display: flex;
+  }
+}
+
+/* --- Objects --- */
+
+/*
+  Positions come from hero-assets.ts as unitless custom properties.
+  Width is capped against the viewport height too, so a wide-but-short
+  window doesn't turn the desk into a pile.
+*/
+.object {
+  position: absolute;
+  left: calc(var(--cx) * 1%);
+  top: calc(var(--cy) * 1%);
+  z-index: var(--z);
+  width: min(calc(var(--cw) * 1vw), calc(var(--cw) * 0.62svh));
+  translate: -50% -50%;
+}
+
+@media (max-width: 1023.98px) {
+  .compactHidden {
+    display: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  .object {
+    left: calc(var(--x) * 1%);
+    top: calc(var(--y) * 1%);
+    width: min(calc(var(--w) * 1vw), calc(var(--w) * 1.9svh));
+  }
+}
+
+/* the resting pose, and the shadow that says "this is lying on a desk" */
+.content {
+  --lift: 0.6rem;
+
+  position: relative;
+  display: block;
+  rotate: calc(var(--r) * 1deg);
+  scale: var(--s);
+  filter: drop-shadow(0 var(--lift) calc(var(--lift) * 1.6) var(--hero-shadow));
+  transition: filter 0.35s ease;
+}
+
+.content img {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+}
+
+/* picked up or hovered: the shadow falls further */
+.object[data-lifted] .content {
+  --lift: 1.25rem;
+}
+
+.content:focus-visible {
+  outline: 2px solid var(--hero-accent);
+  outline-offset: 4px;
+}
+
+/* a strip of paper tape across the top edge */
+.tape::before {
+  content: "";
+  position: absolute;
+  top: -0.35rem;
+  left: 50%;
+  z-index: 1;
+  width: 36%;
+  height: 1rem;
+  background: var(--hero-tape);
+  translate: -50% 0;
+  rotate: -4deg;
+}
+
+/* a pin pushed through the top */
+.pin::before {
+  content: "";
+  position: absolute;
+  top: -0.3rem;
+  left: 50%;
+  z-index: 1;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #f08a7b, #c0392b 70%);
+  box-shadow: 0 2px 2px rgb(60 40 15 / 0.3);
+  translate: -50% 0;
+}
+
+.caption {
+  display: none;
+  position: absolute;
+  top: calc(100% + 0.1rem);
+  left: 12%;
+  color: var(--hero-muted);
+  font-family: var(--hero-font-script), cursive;
+  font-size: clamp(1rem, 1.5vw, 1.4rem);
+  line-height: 1;
+  white-space: nowrap;
+  rotate: -4deg;
+}
+
+@media (min-width: 1024px) {
+  .caption {
+    display: block;
+  }
+}
+
+/* --- Project artifacts: paper, sized in container units so they scale with the desk --- */
+
+.card {
+  container-type: inline-size;
+  border: 1px solid var(--hero-line);
+  border-radius: 0.3rem;
+  background: var(--hero-paper);
+  color: var(--hero-ink);
+  text-decoration: none;
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 3cqw;
+  padding: 9cqw 8cqw 10cqw;
+}
+
+.cardLabel {
+  font-size: max(0.45rem, 5.6cqw);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--hero-accent);
+}
+
+.cardTitle {
+  font-size: max(0.8rem, 12.5cqw);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.cardDesc {
+  font-size: max(0.45rem, 6.6cqw);
+  line-height: 1.35;
+  color: var(--hero-muted);
+}
+
+/* Ordra: an order ticket */
+.ticket .cardDesc {
+  padding-top: 4.5cqw;
+  border-top: 1px dashed var(--hero-line);
+}
+
+/* RentSetGo: a small printed card */
+.print {
+  border-radius: 0.15rem;
+  box-shadow: inset 0 0 0 0.3rem var(--hero-paper), inset 0 0 0 calc(0.3rem + 1px) var(--hero-line);
+}
+
+/* JobFill: a browser window with a form being filled in */
+.browser {
+  overflow: hidden;
+  border-radius: 0.45rem;
+}
+
+.chrome {
+  display: flex;
+  gap: 2.5cqw;
+  padding: 5cqw 6cqw;
+  border-bottom: 1px solid var(--hero-line);
+}
+
+.chrome i {
+  width: 4.5cqw;
+  height: 4.5cqw;
+  border-radius: 50%;
+  background: var(--hero-line);
+}
+
+.fields {
+  display: grid;
+  gap: 3cqw;
+  margin-top: 2cqw;
+}
+
+.fields i {
+  height: 8cqw;
+  border: 1px solid var(--hero-line);
+  border-radius: 2cqw;
+}
+
+.fields i:first-child {
+  border-color: var(--hero-accent);
+  background: color-mix(in srgb, var(--hero-accent) 14%, transparent);
+}
+
+/* n8n: three connected nodes */
+.nodes {
+  display: flex;
+  justify-content: space-between;
+  width: 72%;
+  margin-top: 2cqw;
+  background: linear-gradient(var(--hero-accent) 0 0) center / 100% 1.5px no-repeat;
+}
+
+.nodes i {
+  width: 10cqw;
+  height: 10cqw;
+  border: 1.5px solid var(--hero-accent);
+  border-radius: 2.5cqw;
+  background: var(--hero-paper);
+}
+
+/* AI experiments: a sticky note, written by hand */
+.sticky {
+  aspect-ratio: 1;
+  border-color: transparent;
+  border-radius: 1px;
+  background: var(--hero-sticky);
+}
+
+.sticky .cardLabel {
+  color: var(--hero-muted);
+}
+
+.sticky .cardTitle {
+  font-family: var(--hero-font-script), cursive;
+  font-size: max(1.1rem, 21cqw);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: 0;
+}
+
+/* --- Hand-drawn marks --- */
+
+.star {
+  display: none;
+  position: absolute;
+  z-index: 2;
+  width: 1.1rem;
+  height: 1.1rem;
+  color: var(--hero-accent);
+  pointer-events: none;
+}
+
+@media (min-width: 1024px) {
+  .star {
+    display: block;
+  }
+}
+
+/* --- Cursor follower (fine pointers only; GSAP shows and moves it) --- */
+
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1100;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--hero-ink);
+  border-radius: 50%;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: background-color 0.25s ease;
+}
+
+.cursor[data-over] {
+  background: color-mix(in srgb, var(--hero-accent) 18%, transparent);
+}
