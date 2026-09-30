@@ -1,0 +1,87 @@
+.about {
+  --bloom-x: 80%;
+  --bloom-y: 25%;
+}
+
+.fromHero {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: -1;
+  height: 22svh;
+  background: linear-gradient(#f7f3ea, rgb(247 243 234 / 0));
+  pointer-events: none;
+}
+
+.layout {
+  display: grid;
+  gap: 3rem;
+}
+
+.aside {
+  max-width: 30rem;
+}
+
+.statement {
+  font-size: clamp(1.15rem, 1.7vw, 1.5rem);
+  line-height: 1.5;
+  color: var(--nv-ink);
+}
+
+.focus {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 2rem;
+}
+
+.sphere {
+  top: 10%;
+  right: 6%;
+  width: clamp(9rem, 22vw, 20rem);
+}
+
+.ring {
+  bottom: 8%;
+  left: 4%;
+  width: clamp(8rem, 14vw, 13rem);
+}
+
+.pill {
+  top: 58%;
+  right: 30%;
+  width: clamp(6rem, 10vw, 9rem);
+  rotate: -18deg;
+}
+
+.dot {
+  top: 30%;
+  left: 52%;
+  width: clamp(2rem, 3vw, 3rem);
+}
+
+@media (min-width: 1024px) {
+  /* heading left and high, the statement answers from lower right */
+  .layout {
+    grid-template-columns: 1.4fr 1fr;
+    align-items: end;
+  }
+
+  .aside {
+    justify-self: end;
+    padding-bottom: 0.75rem;
+  }
+}
+
+@media (max-width: 1023.98px) {
+  .sphere {
+    top: 4%;
+    right: -8%;
+    opacity: 0.7;
+  }
+
+  .dot {
+    top: auto;
+    bottom: 10%;
+    left: 80%;
+  }
+}

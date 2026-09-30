@@ -1,0 +1,83 @@
+.experience {
+  --bloom-x: 70%;
+  --bloom-y: 60%;
+}
+
+.layout {
+  display: grid;
+  gap: 3rem;
+  align-items: center;
+}
+
+.stack {
+  position: relative;
+  display: grid;
+  gap: 1rem;
+}
+
+.panel {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.5rem;
+  padding: clamp(1.5rem, 2.5vw, 2.25rem);
+  transform-origin: 50% 0;
+}
+
+.index {
+  font-family: var(--nv-font-display), sans-serif;
+  font-size: clamp(2.5rem, 4vw, 3.75rem);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: var(--nv-accent);
+}
+
+.company {
+  margin-top: 0.4rem;
+  font-family: var(--nv-font-display), sans-serif;
+  font-size: clamp(1.3rem, 2vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.meta {
+  margin-top: 0.35rem;
+  color: var(--nv-muted);
+  font-family: var(--nv-font-mono), monospace;
+  font-size: 0.8rem;
+}
+
+.summary {
+  margin-top: 1rem;
+  color: var(--nv-faint);
+}
+
+/* pinned on desktop: the panels share one spot and are dealt onto a pile */
+.stack[data-stacked] {
+  display: block;
+  height: 17rem;
+}
+
+.stack[data-stacked] .panel {
+  position: absolute;
+  inset: 0;
+}
+
+.ribbon {
+  top: 50%;
+  left: -10%;
+  width: 70vw;
+  rotate: 6deg;
+}
+
+.sphere {
+  bottom: 10%;
+  left: 38%;
+  width: clamp(4rem, 7vw, 7rem);
+}
+
+@media (min-width: 1024px) {
+  .layout {
+    grid-template-columns: 1fr 1.1fr;
+  }
+}

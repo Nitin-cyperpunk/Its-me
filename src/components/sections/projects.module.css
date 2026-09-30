@@ -1,0 +1,130 @@
+.projects {
+  --bloom-x: 60%;
+  --bloom-y: 55%;
+}
+
+.title {
+  font-size: clamp(2.4rem, 5.5vw, 5.5rem);
+}
+
+.sequence {
+  display: grid;
+  gap: 2rem;
+  margin-top: clamp(2rem, 5svh, 3.5rem);
+}
+
+.index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.marker {
+  transition: border-color 0.3s ease, color 0.3s ease, background-color 0.3s ease;
+}
+
+.marker[aria-current="true"] {
+  border-color: var(--nv-accent);
+  background: var(--nv-glass-blue);
+  color: var(--nv-accent);
+}
+
+.markerNumber {
+  color: var(--nv-faint);
+}
+
+.stage {
+  display: grid;
+  gap: 1.25rem;
+  perspective: 1400px;
+}
+
+.cardInner {
+  display: grid;
+  overflow: hidden;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cardInner:hover {
+  border-color: var(--nv-border-strong);
+  box-shadow: var(--nv-shadow), 0 0 50px var(--nv-glow);
+}
+
+.visual {
+  display: grid;
+  place-items: center;
+  min-height: 11rem;
+  background:
+    radial-gradient(circle at 30% 30%, var(--nv-sphere-hi), transparent 45%),
+    linear-gradient(135deg, var(--nv-sphere-mid), var(--nv-sphere-edge));
+  font-family: var(--nv-font-display), sans-serif;
+  font-size: clamp(4rem, 9vw, 8rem);
+  font-weight: 800;
+  color: rgb(255 255 255 / 0.55);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: clamp(1.5rem, 2.5vw, 2.25rem);
+}
+
+.name {
+  font-family: var(--nv-font-display), sans-serif;
+  font-size: clamp(1.8rem, 3.2vw, 3rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.summary {
+  margin-bottom: 0.5rem;
+  color: var(--nv-muted);
+  font-size: 1.05rem;
+}
+
+.sphere {
+  top: 8%;
+  right: 4%;
+  width: clamp(6rem, 12vw, 11rem);
+}
+
+.ring {
+  bottom: 6%;
+  left: 2%;
+  width: clamp(5rem, 10vw, 9rem);
+}
+
+@media (min-width: 1024px) {
+  .sequence {
+    grid-template-columns: 14rem 1fr;
+    align-items: center;
+  }
+
+  .index {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cardInner {
+    grid-template-columns: 1fr 1fr;
+    min-height: 22rem;
+  }
+
+  .visual {
+    min-height: 100%;
+  }
+
+  /* pinned: one dominant card, the others waiting in the same spot */
+  .sequence[data-sequenced] .stage {
+    display: block;
+    position: relative;
+    height: 24rem;
+  }
+
+  .sequence[data-sequenced] .card {
+    position: absolute;
+    inset: 0;
+  }
+}

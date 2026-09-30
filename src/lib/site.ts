@@ -8,30 +8,45 @@ export const siteConfig = {
   url: "https://nitinverse.me",
 
   name: "Nitin Singh",
-  title: "Nitin Singh — Full Stack Developer",
+  title: "Nitin Singh — AI Full-Stack Developer & Software Engineer",
   description:
-    "Nitin Singh is a Full Stack Developer building web products, AI experiments, and automation systems.",
+    "Nitin Singh is an AI Full-Stack Developer and Software Engineer building web and mobile products, AI-powered applications, automation workflows, and SaaS products.",
   // Link previews (Open Graph / X) already show the name as the title.
   shareDescription:
-    "Full Stack Developer building web products, AI experiments, and automation systems.",
-  jobTitle: "Full Stack Developer",
+    "AI Full-Stack Developer building web, mobile, AI, automation, and SaaS products.",
+  // Primary positioning first; the rest are how the same work is also described.
+  jobTitle: "AI Full-Stack Developer",
+  altJobTitles: ["AI Software Engineer", "Full-Stack Developer"],
   keywords: [
     "Nitin Singh",
-    "Full Stack Developer",
-    "web development",
-    "mobile development",
-    "SaaS",
-    "AI",
-    "automation",
+    "AI Full-Stack Developer",
+    "AI Software Engineer",
+    "Full-Stack Developer",
     "Next.js",
     "React",
     "TypeScript",
     "Node.js",
     "Supabase",
-    "PostgreSQL",
+    "n8n",
+    "AI applications",
+    "SaaS",
+  ],
+  // Topics backed by the page's own content — used as Person.knowsAbout.
+  knowsAbout: [
+    "Web development",
+    "Mobile development",
+    "AI-powered applications",
+    "Large language models",
+    "Automation",
+    "SaaS",
+    "Next.js",
+    "React",
+    "TypeScript",
+    "Node.js",
+    "Supabase",
     "n8n",
   ],
-  locale: "en_US",
+  locale: "en_IN",
   // Timezone for the footer's live clock — always shown in this zone, not the visitor's.
   timeZone: "Asia/Kolkata",
 
@@ -41,7 +56,7 @@ export const siteConfig = {
   // once they're real — see publicProfiles below).
   socials: [
     "https://github.com/nitin-cyperpunk",
-    "https://www.https://www.linkedin.com/in/itsnitinsingh66/",
+    "https://www.linkedin.com/in/itsnitinsingh66/",
   ],
 };
 

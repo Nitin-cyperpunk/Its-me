@@ -17,11 +17,10 @@
   --color-lime: #c4ec3b;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* set before paint from the saved choice or the system setting (lib/theme.ts) */
+:root[data-theme="dark"] {
+  --background: #0a0a0a;
+  --foreground: #ededed;
 }
 
 body {

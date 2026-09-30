@@ -1,0 +1,90 @@
+.github {
+  --bloom-x: 30%;
+  --bloom-y: 35%;
+}
+
+.title {
+  font-size: clamp(2.4rem, 5.5vw, 5.5rem);
+}
+
+.panel {
+  margin-top: clamp(2rem, 5svh, 3.5rem);
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+}
+
+.stats {
+  display: grid;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.value {
+  margin-top: 0.35rem;
+  font-family: var(--nv-font-display), sans-serif;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+/* 53 weeks × 7 days, filled column by column like GitHub's graph */
+.grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(7, auto);
+  grid-template-columns: repeat(53, minmax(0, 1fr));
+  gap: clamp(1px, 0.3vw, 4px);
+}
+
+.cell {
+  aspect-ratio: 1;
+  border-radius: 20%;
+  background: var(--nv-border);
+}
+
+/* real data, when it arrives */
+.cell[data-level="1"] {
+  background: color-mix(in srgb, var(--nv-accent) 30%, transparent);
+}
+
+.cell[data-level="2"] {
+  background: color-mix(in srgb, var(--nv-accent) 50%, transparent);
+}
+
+.cell[data-level="3"] {
+  background: color-mix(in srgb, var(--nv-accent) 75%, transparent);
+}
+
+.cell[data-level="4"] {
+  background: var(--nv-accent);
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.profile {
+  color: var(--nv-accent);
+  font-family: var(--nv-font-mono), monospace;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.profile:hover {
+  text-decoration: underline;
+}
+
+.prism {
+  top: 10%;
+  right: 10%;
+  width: clamp(3.5rem, 6vw, 6rem);
+}
+
+@media (min-width: 640px) {
+  .stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

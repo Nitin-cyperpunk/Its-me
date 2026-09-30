@@ -12,7 +12,7 @@ export const heroBackground = { src: `${DIR}/Landing bg.png` };
 
 export const heroText = {
   name: "Nitin Singh",
-  role: "Full Stack Developer",
+  role: "AI Full-Stack Developer",
   tagline: ["Build", "Learn", "Ship"],
   intro: "I build web & mobile products, explore AI, and turn ideas into real-world projects.",
   /** Handwritten nudge next to the controls. */

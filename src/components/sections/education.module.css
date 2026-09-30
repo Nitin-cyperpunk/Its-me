@@ -1,0 +1,128 @@
+.education {
+  --bloom-x: 20%;
+  --bloom-y: 70%;
+}
+
+.mark {
+  position: absolute;
+  right: -2vw;
+  bottom: -4svh;
+  z-index: -1;
+  font-family: var(--nv-font-display), sans-serif;
+  font-size: clamp(9rem, 32vw, 30rem);
+  font-weight: 800;
+  line-height: 0.8;
+  letter-spacing: -0.06em;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--nv-border-strong);
+  pointer-events: none;
+  user-select: none;
+}
+
+.layout {
+  display: grid;
+  gap: 3rem;
+  align-items: center;
+}
+
+.stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+
+.card {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 30rem);
+  padding: clamp(1.75rem, 3vw, 2.5rem);
+}
+
+.degree {
+  margin-top: 0.9rem;
+  font-family: var(--nv-font-display), sans-serif;
+  font-size: clamp(1.6rem, 2.6vw, 2.3rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.honors {
+  margin-top: 0.5rem;
+  color: var(--nv-accent);
+  font-weight: 600;
+}
+
+.institution {
+  margin-top: 1.5rem;
+  color: var(--nv-muted);
+  line-height: 1.5;
+}
+
+.years {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--nv-border);
+  color: var(--nv-muted);
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+}
+
+.prism {
+  top: 12%;
+  right: 8%;
+  width: clamp(4rem, 8vw, 8rem);
+}
+
+.ribbon {
+  top: 24%;
+  left: -6%;
+  width: 40vw;
+  rotate: -8deg;
+}
+
+/* mobile: metadata sits in a row under the card */
+.metaYears,
+.metaCity,
+.metaHonors {
+  position: relative;
+}
+
+@media (min-width: 1024px) {
+  .layout {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .stage {
+    justify-self: center;
+    padding: 3rem 2rem;
+  }
+
+  /* desktop: metadata floats around the card edges */
+  .metaYears,
+  .metaCity,
+  .metaHonors {
+    position: absolute;
+    z-index: 2;
+  }
+
+  .metaYears {
+    top: 0.5rem;
+    right: -1rem;
+    rotate: 4deg;
+  }
+
+  .metaCity {
+    bottom: 0.75rem;
+    left: -1.5rem;
+    rotate: -5deg;
+  }
+
+  .metaHonors {
+    right: -3rem;
+    bottom: 32%;
+    rotate: -3deg;
+  }
+}

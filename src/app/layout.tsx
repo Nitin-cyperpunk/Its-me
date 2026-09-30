@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { JsonLd } from "@/components/seo/JsonLd";
 import SmoothScroll from "@/components/smooth-scroll/SmoothScroll";
+import ThemeToggle from "@/components/theme/ThemeToggle";
+import { education } from "@/content/portfolio";
 import { publicProfiles, siteConfig } from "@/lib/site";
+import { themeScript } from "@/lib/theme";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -40,9 +43,11 @@ export const metadata: Metadata = {
     title: siteConfig.title,
     description: siteConfig.shareDescription,
   },
+  // No X handle is set on purpose — add `creator: "@handle"` only if one exists.
+  // twitter:image comes from src/app/twitter-image.tsx.
   twitter: {
     card: "summary_large_image",
-    title: siteConfig.title,
+    title: `${siteConfig.name} — ${siteConfig.jobTitle}`,
     description: siteConfig.shareDescription,
   },
   // Favicon: src/app/favicon.ico is picked up by the file convention.
@@ -62,24 +67,47 @@ export const metadata: Metadata = {
   },
 };
 
-const person = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "@id": `${siteConfig.url}/#person`,
-  name: siteConfig.name,
-  url: siteConfig.url,
-  jobTitle: siteConfig.jobTitle,
-  ...(publicProfiles.length > 0 && { sameAs: publicProfiles }),
-};
+// One graph so the nodes can reference each other by @id. Only facts that are
+// on the page itself belong here.
+const homeUrl = `${siteConfig.url}/`;
+const personId = `${siteConfig.url}/#person`;
+const websiteId = `${siteConfig.url}/#website`;
 
-const website = {
+const structuredData = {
   "@context": "https://schema.org",
-  "@type": "WebSite",
-  "@id": `${siteConfig.url}/#website`,
-  name: siteConfig.name,
-  url: siteConfig.url,
-  inLanguage: "en",
-  author: { "@id": person["@id"] },
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": personId,
+      name: siteConfig.name,
+      url: homeUrl,
+      jobTitle: siteConfig.jobTitle,
+      description: siteConfig.description,
+      knowsAbout: siteConfig.knowsAbout,
+      alumniOf: {
+        "@type": "CollegeOrUniversity",
+        name: education.institution,
+        address: { "@type": "PostalAddress", addressLocality: education.city },
+      },
+      ...(publicProfiles.length > 0 && { sameAs: publicProfiles }),
+    },
+    {
+      "@type": "WebSite",
+      "@id": websiteId,
+      name: siteConfig.name,
+      url: homeUrl,
+      inLanguage: "en-IN",
+      author: { "@id": personId },
+    },
+    {
+      "@type": "ProfilePage",
+      "@id": `${homeUrl}#profile`,
+      url: homeUrl,
+      name: siteConfig.title,
+      isPartOf: { "@id": websiteId },
+      mainEntity: { "@id": personId },
+    },
+  ],
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -87,11 +115,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      // data-theme is set by the inline script below before hydration
+      suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col font-sans">
-        <JsonLd data={person} />
-        <JsonLd data={website} />
+        {/* before anything paints: the saved theme, or the system's */}
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <JsonLd data={structuredData} />
         <SmoothScroll />
+        <ThemeToggle />
         {children}
       </body>
     </html>

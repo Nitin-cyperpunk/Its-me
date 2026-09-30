@@ -3,20 +3,40 @@
   .faq-message, .typing-indicator, .faq-content p, and the message's parent row.
 */
 
+/*
+  Visuals follow the NITINVERSE scene tokens (--nv-*, set by the surrounding
+  Scenes wrapper); the fallbacks are the original lavender look.
+*/
 .faq {
-  --faq-bg: #d3c5f7;
-  --faq-ink: #13072e;
-  --faq-lime: #c4ec3b;
-  --faq-line: rgb(19 7 46 / 0.18);
+  --faq-bg: var(--nv-bg, #d3c5f7);
+  --faq-ink: var(--nv-ink, #13072e);
+  --faq-accent: var(--nv-accent, #13072e);
+  --faq-line: var(--nv-border, rgb(19 7 46 / 0.18));
+  /* the visitor's side: clear glass */
+  --faq-question-bg: var(--nv-glass-strong, #c4ec3b);
+  --faq-question-edge: var(--nv-border-strong, #13072e);
+  /* Nitin's side: royal-blue glass */
+  --faq-answer-bg: #2f4bd8;
+  --faq-answer-ink: #f4f6ff;
 
   position: relative;
   overflow-x: clip;
   padding: clamp(4rem, 12vw, 10rem) clamp(1rem, 5vw, 5rem);
   /* room for the last messages to reach their scroll triggers (75% of the viewport) */
   padding-bottom: max(clamp(4rem, 12vw, 10rem), 40svh);
-  background: var(--faq-bg);
+  background:
+    /* The footer below is locked and opens in lavender (#d3c5f7); ending on
+       the same colour keeps the handover seamless in both themes. */
+    linear-gradient(to bottom, rgb(211 197 247 / 0) calc(100% - 28svh), #d3c5f7),
+    radial-gradient(ellipse 50% 20% at 85% 8%, var(--nv-glow, transparent), transparent 70%),
+    radial-gradient(ellipse 45% 20% at 10% 60%, var(--nv-lavender, transparent), transparent 70%),
+    var(--faq-bg);
   color: var(--faq-ink);
   font-family: var(--faq-font-body), sans-serif;
+}
+
+:global(:root[data-theme="dark"]) .faq {
+  --faq-answer-bg: rgb(47 80 230 / 0.55);
 }
 
 .title {
@@ -72,14 +92,23 @@
 }
 
 .faq :global(.faq-question) {
-  background: var(--faq-lime);
-  box-shadow: inset 0 0 0 1.5px var(--faq-ink);
+  background: var(--faq-question-bg);
+  box-shadow:
+    inset 0 0 0 1px var(--faq-question-edge),
+    0 18px 40px rgb(33 44 110 / 0.12);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
   transform-origin: 100% 100%;
 }
 
 .faq :global(.faq-answer) {
-  background: var(--faq-ink);
-  color: var(--faq-bg);
+  background: var(--faq-answer-bg);
+  color: var(--faq-answer-ink);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.18),
+    0 20px 50px rgb(47 75 216 / 0.25);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
   transform-origin: 0% 100%;
 }
 
@@ -98,7 +127,7 @@
 }
 
 .faq :global(.faq-content a) {
-  color: var(--faq-lime);
+  color: inherit;
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
@@ -173,9 +202,9 @@
 .faq :global(.faq-avatar-you) {
   position: relative;
   padding: 0.45rem 0.85rem;
-  border: 1.5px solid var(--faq-ink);
+  border: 1px solid var(--faq-question-edge);
   border-radius: 999px;
-  background: var(--faq-lime);
+  background: var(--faq-question-bg);
   font-size: 0.875rem;
 }
 
@@ -187,7 +216,7 @@
   left: -0.5rem;
   width: 1rem;
   height: 1rem;
-  background: var(--faq-ink);
+  background: var(--faq-accent);
   clip-path: polygon(0 0, 100% 45%, 50% 55%, 40% 100%);
 }
 
@@ -196,10 +225,10 @@
   place-items: center;
   width: 2.5rem;
   height: 2.5rem;
-  border: 2px solid #fff;
+  border: 1px solid rgb(255 255 255 / 0.5);
   border-radius: 50%;
-  background: var(--faq-ink);
-  color: var(--faq-lime);
+  background: var(--faq-answer-bg);
+  color: var(--faq-answer-ink);
   font-family: var(--faq-font-display), sans-serif;
   font-size: 1.25rem;
 }

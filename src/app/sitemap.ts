@@ -1,15 +1,24 @@
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/lib/site";
 
-// The site has one public route today. Add an entry here for each new page
-// (sections on the home page, like a future #projects, don't get entries).
+type Route = {
+  path: string;
+  changeFrequency?: MetadataRoute.Sitemap[number]["changeFrequency"];
+  priority?: number;
+};
+
+// Every public page, and only those. About, education, experience, projects
+// and contact are sections of the home page today, so they have no entries —
+// when one becomes its own page (e.g. src/app/projects/page.tsx), add
+// { path: "/projects" } here. Never list API, draft, private or query-string URLs.
+const routes: Route[] = [{ path: "/", changeFrequency: "monthly", priority: 1 }];
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  return [
-    {
-      url: siteConfig.url,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 1,
-    },
-  ];
+  const lastModified = new Date();
+  return routes.map(({ path, changeFrequency, priority }) => ({
+    url: new URL(path, siteConfig.url).href,
+    lastModified,
+    changeFrequency,
+    priority,
+  }));
 }
