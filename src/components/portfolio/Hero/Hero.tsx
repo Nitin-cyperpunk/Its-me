@@ -1,4 +1,4 @@
-import { Caveat, IBM_Plex_Mono } from "next/font/google";
+import { Caveat } from "next/font/google";
 import Image from "next/image";
 import { heroAssets, heroBackground } from "./hero-assets";
 import HeroScene from "./HeroScene";
@@ -6,18 +6,12 @@ import HeroText from "./HeroText";
 import InteractiveAsset from "./InteractiveAsset";
 import styles from "./hero.module.css";
 
-// A signature for the name, a typewriter for everything else:
-// personal notebook + developer workspace.
+// A handwritten signature for the name and notes; everything else uses the
+// site's type system (globals.css): personal notebook + developer workspace.
 const script = Caveat({
   weight: "700",
   subsets: ["latin"],
   variable: "--hero-font-script",
-});
-
-const mono = IBM_Plex_Mono({
-  weight: ["400", "500", "600"],
-  subsets: ["latin"],
-  variable: "--hero-font-mono",
 });
 
 const Star = ({ x, y, rotate }: { x: string; y: string; rotate: number }) => (
@@ -42,7 +36,7 @@ const Star = ({ x, y, rotate }: { x: string; y: string; rotate: number }) => (
 // Content is server-rendered; only HeroScene ships JS.
 export default function Hero() {
   return (
-    <HeroScene className={`${script.variable} ${mono.variable} ${styles.hero}`}>
+    <HeroScene className={`${script.variable} ${styles.hero}`}>
       <div className={styles.bg} data-hero-bg data-enter aria-hidden="true">
         <Image src={heroBackground.src} alt="" fill preload sizes="100vw" draggable={false} />
       </div>

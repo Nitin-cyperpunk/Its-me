@@ -6,8 +6,11 @@
 */
 
 .universe {
-  /* headings use the body grotesk at heavy weights */
-  --nv-font-display: var(--nv-font-body);
+  /* the site's type system (globals.css) */
+  --nv-font-display: var(--font-display);
+  --nv-font-body: var(--font-body);
+  --nv-font-mono: var(--font-code);
+  --nv-on-accent: #fff;
   --nv-bg: #f7f6f2;
   --nv-bg-deep: #eceffb;
   --nv-ink: #111431;
@@ -44,6 +47,7 @@
   --nv-faint: rgb(226 232 255 / 0.42);
   --nv-accent: #7f9bff;
   --nv-accent-soft: #4d6bff;
+  --nv-on-accent: #050a1f;
   --nv-glass: rgb(40 72 210 / 0.16);
   --nv-glass-strong: rgb(46 80 225 / 0.26);
   --nv-glass-blue: rgb(52 92 255 / 0.22);
@@ -136,9 +140,9 @@
   margin-top: 1.25rem;
   font-family: var(--nv-font-display), sans-serif;
   font-size: clamp(2.6rem, 7vw, 7rem);
-  font-weight: 700;
-  line-height: 0.98;
-  letter-spacing: -0.04em;
+  font-weight: var(--weight-heading);
+  line-height: 1;
+  letter-spacing: -0.035em;
   text-wrap: balance;
 }
 
@@ -290,7 +294,7 @@
 .buttonPrimary {
   border-color: transparent;
   background: var(--nv-accent);
-  color: #fff;
+  color: var(--nv-on-accent);
 }
 
 .button:focus-visible,

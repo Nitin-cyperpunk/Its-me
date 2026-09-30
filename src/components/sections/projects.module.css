@@ -59,7 +59,7 @@
     linear-gradient(135deg, var(--nv-sphere-mid), var(--nv-sphere-edge));
   font-family: var(--nv-font-display), sans-serif;
   font-size: clamp(4rem, 9vw, 8rem);
-  font-weight: 800;
+  font-weight: var(--weight-display);
   color: rgb(255 255 255 / 0.55);
 }
 
@@ -73,7 +73,7 @@
 .name {
   font-family: var(--nv-font-display), sans-serif;
   font-size: clamp(1.8rem, 3.2vw, 3rem);
-  font-weight: 700;
+  font-weight: var(--weight-heading);
   line-height: 1;
   letter-spacing: -0.03em;
 }

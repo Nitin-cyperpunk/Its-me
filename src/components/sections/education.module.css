@@ -10,7 +10,7 @@
   z-index: -1;
   font-family: var(--nv-font-display), sans-serif;
   font-size: clamp(9rem, 32vw, 30rem);
-  font-weight: 800;
+  font-weight: var(--weight-display);
   line-height: 0.8;
   letter-spacing: -0.06em;
   color: transparent;
@@ -44,7 +44,7 @@
   margin-top: 0.9rem;
   font-family: var(--nv-font-display), sans-serif;
   font-size: clamp(1.6rem, 2.6vw, 2.3rem);
-  font-weight: 700;
+  font-weight: var(--weight-subheading);
   line-height: 1.1;
   letter-spacing: -0.02em;
 }
@@ -52,7 +52,7 @@
 .honors {
   margin-top: 0.5rem;
   color: var(--nv-accent);
-  font-weight: 600;
+  font-weight: var(--weight-label);
 }
 
 .institution {
@@ -121,8 +121,8 @@
   }
 
   .metaHonors {
-    right: -3rem;
-    bottom: 32%;
+    right: -1rem;
+    bottom: 0;
     rotate: -3deg;
   }
 }

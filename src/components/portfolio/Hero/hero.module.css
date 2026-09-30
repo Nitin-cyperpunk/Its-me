@@ -1,15 +1,27 @@
-/* Light only. A warm cream desk; the artwork is a faint texture, never a backdrop. */
+/*
+  A desk in two lights. Light: a warm cream desk under white paper and glass.
+  Dark: the same desk at night — deep navy, royal-blue glass, a faint blue glow.
+  The artwork is a faint texture, never a backdrop. Colours come from the site
+  tokens in globals.css (html[data-theme]); only the desk's own props live here.
+*/
 
 .hero {
-  --hero-bg: #f7f3ea;
-  --hero-ink: #2a2521;
-  --hero-muted: rgb(42 37 33 / 0.68);
-  --hero-accent: #5b4bc4;
+  --hero-bg: var(--background);
+  --hero-ink: var(--foreground);
+  --hero-muted: var(--muted);
+  --hero-accent: var(--accent);
+  --hero-line: var(--line);
+  --hero-shadow: var(--shadow);
+  /* glass keys and paper artifacts */
+  --hero-glass: var(--glass);
+  --hero-glass-border: var(--glass-border);
   --hero-paper: #fffdf7;
-  --hero-line: rgb(42 37 33 / 0.16);
+  --hero-key-shadow: 0 3px 0 rgb(42 37 33 / 0.16), 0 10px 16px rgb(60 40 15 / 0.08);
+  --hero-key-pressed: 0 1px 0 rgb(42 37 33 / 0.16);
+  --hero-glow: transparent;
   --hero-sticky: #f8e68c;
   --hero-tape: rgb(233 222 184 / 0.82);
-  --hero-shadow: rgb(60 40 15 / 0.18);
+  --hero-texture: 0.4;
 
   position: relative;
   isolation: isolate;
@@ -18,7 +30,23 @@
   background: var(--hero-bg);
   color: var(--hero-ink);
   color-scheme: light;
-  font-family: var(--hero-font-mono), monospace;
+  font-family: var(--font-body);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+:global(:root[data-theme="dark"]) .hero {
+  /* royal-blue glass over navy, mostly opaque so the words on it stay crisp */
+  --hero-paper: rgb(24 40 118 / 0.92);
+  --hero-key-shadow: 0 3px 0 rgb(0 3 20 / 0.5), 0 12px 24px rgb(0 3 20 / 0.45);
+  --hero-key-pressed: 0 1px 0 rgb(0 3 20 / 0.5), 0 0 18px rgb(80 120 255 / 0.25);
+  --hero-glow: rgb(64 110 255 / 0.16);
+  /* the sticky note and the tape are real objects: dimmed, not recoloured */
+  --hero-sticky: #e3d27f;
+  --hero-tape: rgb(205 215 255 / 0.3);
+  /* the cream desk artwork, pressed into the navy rather than laid on top */
+  --hero-texture: 0.45;
+
+  color-scheme: dark;
 }
 
 @media (min-width: 1024px) {
@@ -59,21 +87,24 @@
 
 .bg img {
   object-fit: cover;
-  opacity: 0.4;
+  opacity: var(--hero-texture);
   user-select: none;
 }
 
-/* a pool of clean paper behind the words, so the texture never competes with them */
+:global(:root[data-theme="dark"]) .bg img {
+  mix-blend-mode: soft-light;
+}
+
+/* a pool of clean paper behind the words, so the texture never competes with
+   them — and, at night, the faintest blue glow under the name */
 .wash {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background: radial-gradient(
-    ellipse 46% 50% at 50% 50%,
-    var(--hero-bg) 30%,
-    rgb(247 243 234 / 0) 100%
-  );
+  background:
+    radial-gradient(ellipse 30% 28% at 50% 46%, var(--hero-glow), transparent 70%),
+    radial-gradient(ellipse 46% 50% at 50% 50%, var(--hero-bg) 30%, transparent 100%);
 }
 
 /* --- Words: always on top of the desk and never in the way of a drag --- */
@@ -108,13 +139,15 @@
 
 .role {
   margin-top: 1rem;
-  font-size: clamp(0.95rem, 1.15vw, 1.1rem);
-  font-weight: 500;
-  letter-spacing: 0.02em;
+  font-size: clamp(1rem, 1.25vw, 1.15rem);
+  font-weight: var(--weight-subheading);
+  letter-spacing: 0.01em;
 }
 
 .tagline {
   margin-top: 0.5rem;
+  font-family: var(--font-code);
+  font-weight: var(--weight-label);
   font-size: 0.72rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
@@ -162,13 +195,13 @@
   place-items: center;
   width: 2.75rem;
   height: 2.75rem;
-  border: 1px solid var(--hero-line);
+  border: 1px solid var(--hero-glass-border);
   border-radius: 0.65rem;
-  background: var(--hero-paper);
+  background: var(--hero-glass);
   color: var(--hero-ink);
-  box-shadow:
-    0 3px 0 rgb(42 37 33 / 0.16),
-    0 10px 16px rgb(60 40 15 / 0.08);
+  box-shadow: var(--hero-key-shadow);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   cursor: pointer;
   transition:
     transform 0.18s ease,
@@ -190,9 +223,9 @@
 .control[aria-pressed="true"] {
   transform: translateY(2px);
   border-color: var(--hero-accent);
-  background: color-mix(in srgb, var(--hero-accent) 12%, var(--hero-paper));
+  background: var(--accent-soft);
   color: var(--hero-accent);
-  box-shadow: 0 1px 0 rgb(42 37 33 / 0.16);
+  box-shadow: var(--hero-key-pressed);
 }
 
 .control:focus-visible {
@@ -208,7 +241,8 @@
   padding: 0.25rem 0.5rem;
   border-radius: 0.3rem;
   background: var(--hero-ink);
-  color: var(--hero-paper);
+  color: var(--hero-bg);
+  font-family: var(--font-code);
   font-size: 0.6rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -394,6 +428,7 @@
 }
 
 .cardLabel {
+  font-family: var(--font-code);
   font-size: max(0.45rem, 5.6cqw);
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -402,7 +437,7 @@
 
 .cardTitle {
   font-size: max(0.8rem, 12.5cqw);
-  font-weight: 600;
+  font-weight: var(--weight-heading);
   line-height: 1;
   letter-spacing: -0.02em;
 }
@@ -481,10 +516,15 @@
 
 /* AI experiments: a sticky note, written by hand */
 .sticky {
+  /* yellow paper in both themes, so it keeps dark pencil in both */
+  --hero-ink: #2a2521;
+  --hero-muted: rgb(42 37 33 / 0.68);
+
   aspect-ratio: 1;
   border-color: transparent;
   border-radius: 1px;
   background: var(--hero-sticky);
+  color: var(--hero-ink);
 }
 
 .sticky .cardLabel {

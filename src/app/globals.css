@@ -1,14 +1,56 @@
 @import "tailwindcss";
 
+/*
+  Site-wide tokens. The theme is html[data-theme], set before paint (lib/theme.ts).
+  The hero maps its --hero-* tokens onto these; the scenes keep their own --nv-*
+  palette (components/sections/scenes.module.css) keyed on the same attribute.
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* warm off-white desk, charcoal ink, royal-blue accent, white glass */
+  --background: #f7f3ea;
+  --foreground: #25221f;
+  --muted: rgb(37 34 31 / 0.66);
+  --line: rgb(37 34 31 / 0.14);
+  --glass: rgb(255 255 255 / 0.72);
+  --glass-border: rgb(47 75 216 / 0.14);
+  --accent: #2f4bd8;
+  --accent-soft: rgb(47 75 216 / 0.12);
+  --shadow: rgb(60 45 25 / 0.18);
+
+  /*
+    Typography: one grotesk for display + body, one mono for labels.
+    (Tailwind's own --font-mono stays Geist Mono for the locked footer, hence
+    --font-code.) The terminal intro and the footer load their own faces.
+  */
+  --font-display: var(--font-host-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-host-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-code: var(--font-plex-mono), ui-monospace, monospace;
+
+  /* hierarchy comes from size and spacing; weight stays restrained */
+  --weight-display: 550;
+  --weight-heading: 550;
+  --weight-subheading: 500;
+  --weight-body: 400;
+  --weight-label: 500;
+}
+
+/* deep navy, royal-blue glass, off-white type, a soft electric-blue accent */
+:root[data-theme="dark"] {
+  --background: #070c24;
+  --foreground: #eef1fb;
+  --muted: rgb(226 231 250 / 0.68);
+  --line: rgb(150 172 255 / 0.18);
+  --glass: rgb(46 78 214 / 0.24);
+  --glass-border: rgb(140 165 255 / 0.28);
+  --accent: #7f9bff;
+  --accent-soft: rgb(90 125 255 / 0.2);
+  --shadow: rgb(0 3 20 / 0.6);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-body);
   --font-mono: var(--font-geist-mono);
 
   /* footer scene */
@@ -17,13 +59,8 @@
   --color-lime: #c4ec3b;
 }
 
-/* set before paint from the saved choice or the system setting (lib/theme.ts) */
-:root[data-theme="dark"] {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
+  font-weight: var(--weight-body);
 }

@@ -32,23 +32,24 @@
     radial-gradient(ellipse 45% 20% at 10% 60%, var(--nv-lavender, transparent), transparent 70%),
     var(--faq-bg);
   color: var(--faq-ink);
-  font-family: var(--faq-font-body), sans-serif;
+  font-family: var(--font-body);
 }
 
 :global(:root[data-theme="dark"]) .faq {
   --faq-answer-bg: rgb(47 80 230 / 0.55);
 }
 
+/* editorial, not a billboard: the section-heading scale at a calm weight */
 .title {
   max-width: 72rem;
   margin: 0 auto clamp(3rem, 8vw, 6rem);
-  font-family: var(--faq-font-display), sans-serif;
-  font-size: clamp(3.25rem, 12vw, 10rem);
-  font-weight: 800;
-  line-height: 0.85;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
-  overflow-wrap: anywhere;
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 8vw, 7.5rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  overflow-wrap: break-word;
 }
 
 .title span {
@@ -121,8 +122,8 @@
 .faq :global(.faq-content p) {
   margin: 0;
   font-size: clamp(1rem, 0.9rem + 0.4vw, 1.25rem);
-  font-weight: 700;
-  line-height: 1.3;
+  font-weight: var(--weight-subheading);
+  line-height: 1.4;
   overflow-wrap: anywhere;
 }
 
@@ -195,7 +196,7 @@
 
 .faq :global(.faq-avatar) {
   flex-shrink: 0;
-  font-weight: 700;
+  font-weight: var(--weight-label);
   line-height: 1;
 }
 
@@ -229,7 +230,7 @@
   border-radius: 50%;
   background: var(--faq-answer-bg);
   color: var(--faq-answer-ink);
-  font-family: var(--faq-font-display), sans-serif;
+  font-family: var(--font-display);
   font-size: 1.25rem;
 }
 

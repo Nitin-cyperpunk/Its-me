@@ -1,18 +1,6 @@
-import { Barlow_Condensed, Host_Grotesk } from "next/font/google";
 import { faqItems, type FaqItem } from "./faq-data";
 import FaqConversation from "./FaqConversation";
 import styles from "./faq.module.css";
-
-const display = Barlow_Condensed({
-  weight: "800",
-  subsets: ["latin"],
-  variable: "--faq-font-display",
-});
-
-const body = Host_Grotesk({
-  subsets: ["latin"],
-  variable: "--faq-font-body",
-});
 
 // Class names inside the conversation (faq-row, faq-message, typing-indicator,
 // faq-content) are selected by FaqConversation's animation — keep them.
@@ -20,7 +8,7 @@ export default function Faq({ items = faqItems }: { items?: FaqItem[] }) {
   return (
     <section
       aria-labelledby="faq-title"
-      className={`${styles.faq} ${display.variable} ${body.variable}`}
+      className={styles.faq}
     >
       <h2 id="faq-title" className={styles.title}>
         Your questions, <span>answered</span>

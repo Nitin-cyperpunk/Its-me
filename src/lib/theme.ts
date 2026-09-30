@@ -1,7 +1,8 @@
 // The site's one theme mechanism: html[data-theme="light" | "dark"].
 // The visitor's explicit choice is remembered; without one, the system setting
-// decides (and is followed live). The hero, terminal intro and footer each have
-// a single fixed look; the theme recolours the scenes in between.
+// decides (and is followed live). The hero and every scene after it recolour
+// from tokens (app/globals.css, sections/scenes.module.css); the terminal intro
+// and the footer each keep a single fixed look.
 
 export type Theme = "light" | "dark";
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Host_Grotesk, IBM_Plex_Mono } from "next/font/google";
 import { JsonLd } from "@/components/seo/JsonLd";
 import SmoothScroll from "@/components/smooth-scroll/SmoothScroll";
 import ThemeToggle from "@/components/theme/ThemeToggle";
@@ -8,11 +8,20 @@ import { publicProfiles, siteConfig } from "@/lib/site";
 import { themeScript } from "@/lib/theme";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// The site's one type system (tokens in globals.css): Host Grotesk for display
+// and body (variable, so in-between weights like 550 work), Plex Mono for labels.
+const grotesk = Host_Grotesk({
+  variable: "--font-host-grotesk",
   subsets: ["latin"],
 });
 
+const plexMono = IBM_Plex_Mono({
+  weight: ["400", "500", "600"],
+  variable: "--font-plex-mono",
+  subsets: ["latin"],
+});
+
+// Only the footer's small mono caption uses this (Tailwind's font-mono).
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
@@ -114,7 +123,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${grotesk.variable} ${plexMono.variable} ${geistMono.variable} h-full antialiased`}
       // data-theme is set by the inline script below before hydration
       suppressHydrationWarning
     >

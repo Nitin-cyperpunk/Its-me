@@ -22,7 +22,7 @@
   margin-top: 0.35rem;
   font-family: var(--nv-font-display), sans-serif;
   font-size: clamp(1.8rem, 3vw, 2.6rem);
-  font-weight: 700;
+  font-weight: var(--weight-heading);
   letter-spacing: -0.03em;
 }
 

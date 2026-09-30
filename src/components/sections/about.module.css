@@ -8,7 +8,8 @@
   inset: 0 0 auto;
   z-index: -1;
   height: 22svh;
-  background: linear-gradient(#f7f3ea, rgb(247 243 234 / 0));
+  /* the hero's desk colour, in whichever theme is on */
+  background: linear-gradient(var(--background), transparent);
   pointer-events: none;
 }
 
