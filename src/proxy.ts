@@ -13,14 +13,22 @@ import {
 // every hit. Not a security boundary — just keeps the count honest.
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|headless|lighthouse/i;
 
+// Only real page loads count. Next strips its own router headers (RSC,
+// Next-Router-Prefetch) before the proxy runs, so they can't be checked here;
+// instead use what the browser says it's fetching: a page load is a "document",
+// a router/RSC fetch is "empty" and asks for text/x-component.
+// (Requests without Sec-Fetch-Dest, e.g. older browsers, still count.)
+function isPageLoad(h: Headers) {
+  const dest = h.get("sec-fetch-dest");
+  return (dest === null || dest === "document") && !h.get("accept")?.includes("text/x-component");
+}
+
 function shouldCount(request: NextRequest) {
   const h = request.headers;
   return (
     visitorCounterEnabled &&
     request.method === "GET" &&
-    // only full page loads: in-app (RSC) navigations back to "/" aren't new visits
-    !h.has("rsc") &&
-    !h.has("next-router-prefetch") &&
+    isPageLoad(h) &&
     h.get("purpose") !== "prefetch" &&
     !h.get("sec-purpose")?.includes("prefetch") &&
     !BOT.test(h.get("user-agent") ?? "")

@@ -61,7 +61,7 @@ export default async function CinematicFooter() {
     <FooterScene
       className={`${display.variable} ${body.variable} ${script.variable} relative isolate flex min-h-[max(100svh,40rem)] flex-col overflow-clip bg-night font-[family-name:var(--footer-font-body)] text-mist lg:min-h-[max(115svh,44rem)]`}
     >
-      <div className="relative z-2 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-between gap-16 px-[clamp(1rem,5vw,5rem)] pt-[clamp(9rem,24svh,16rem)] pb-[clamp(1.5rem,4vw,2.5rem)]">
+      <div className="relative z-2 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-end gap-9 px-[clamp(1rem,5vw,5rem)] pt-[clamp(9rem,24svh,16rem)] pb-[clamp(1.5rem,4vw,2.5rem)]">
         {/* phones/tablets: headline, then the form; desktop: side by side */}
         <div
           data-cta
