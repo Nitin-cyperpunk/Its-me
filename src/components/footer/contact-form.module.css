@@ -1,0 +1,445 @@
+/*
+  The footer's contact form: editorial, on the night scene itself — no card.
+  Thin rules instead of boxes; lime only where it means something (focus, the
+  send button, the chosen topic). The footer has one fixed look in both themes.
+*/
+
+.form {
+  --cf-ink: #f3efff;
+  --cf-muted: rgb(243 239 255 / 0.62);
+  --cf-faint: rgb(243 239 255 / 0.38);
+  --cf-rule: rgb(243 239 255 / 0.22);
+  --cf-lime: #c4ec3b;
+  --cf-lime-hover: #d6f56a;
+  --cf-error: #ffb4a8;
+  --cf-night: #07051a;
+
+  display: grid;
+  gap: clamp(1.6rem, 3vw, 2.2rem);
+  color: var(--cf-ink);
+  color-scheme: dark;
+}
+
+/* the bits that can sit over the lit landscape get a soft shadow to stay crisp */
+.note,
+.count,
+.status {
+  text-shadow: 0 1px 6px rgb(7 5 26 / 0.6);
+}
+
+.row {
+  display: grid;
+  gap: inherit;
+}
+
+@media (min-width: 640px) {
+  .row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* --- Fields: a label, the control, and a rule that draws in on focus --- */
+
+.field {
+  position: relative;
+  display: grid;
+  min-width: 0;
+}
+
+.label {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cf-muted);
+  transition: color 0.25s ease;
+}
+
+.field:focus-within .label {
+  color: var(--cf-lime);
+}
+
+.control {
+  width: 100%;
+  min-width: 0;
+  padding: 0.75rem 0 0.7rem;
+  border: 0;
+  border-bottom: 1px solid var(--cf-rule);
+  border-radius: 0;
+  background: transparent;
+  color: var(--cf-ink);
+  font: inherit;
+  font-size: clamp(1rem, 1.2vw, 1.1rem);
+  /* the focus underline: a lime rule that grows from the left */
+  background-image: linear-gradient(var(--cf-lime), var(--cf-lime));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition:
+    background-size 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.25s ease;
+}
+
+.control::placeholder {
+  color: var(--cf-faint);
+  opacity: 1;
+}
+
+.control:hover {
+  border-bottom-color: rgb(243 239 255 / 0.4);
+}
+
+.control:focus {
+  outline: none;
+  background-size: 100% 1px;
+  border-bottom-color: transparent;
+}
+
+/* keyboard focus also gets a visible ring, beyond the underline */
+.control:focus-visible {
+  outline: 2px solid transparent;
+  box-shadow: 0 1px 0 var(--cf-lime);
+}
+
+.field[data-invalid] .control {
+  border-bottom-color: var(--cf-error);
+}
+
+.field[data-invalid] .control:focus {
+  background-image: linear-gradient(var(--cf-error), var(--cf-error));
+}
+
+.textarea {
+  min-height: 7.5rem;
+  resize: vertical;
+  line-height: 1.55;
+}
+
+/* browser autofill would otherwise paint a pale box over the night sky */
+.control:-webkit-autofill {
+  -webkit-text-fill-color: var(--cf-ink);
+  caret-color: var(--cf-ink);
+  transition: background-color 9999s ease 0s, background-size 0.45s ease;
+  box-shadow: inset 0 0 0 100px rgb(20 12 50 / 0.01);
+}
+
+.error {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--cf-error);
+}
+
+.meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.count {
+  margin-top: 0.5rem;
+  margin-left: auto;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--cf-faint);
+  white-space: nowrap;
+}
+
+.count[data-near] {
+  color: var(--cf-lime);
+}
+
+/* --- Topic: a native select (keyboard + screen readers for free), restyled --- */
+
+.selectWrap {
+  position: relative;
+}
+
+.select {
+  appearance: none;
+  padding-right: 2rem;
+  cursor: pointer;
+}
+
+.select[data-empty] {
+  color: var(--cf-faint);
+}
+
+.select option {
+  background: var(--cf-night);
+  color: var(--cf-ink);
+}
+
+.chevron {
+  position: absolute;
+  top: 50%;
+  right: 0.15rem;
+  width: 1rem;
+  height: 1rem;
+  translate: 0 -50%;
+  color: var(--cf-muted);
+  pointer-events: none;
+  transition: rotate 0.3s ease, color 0.25s ease;
+}
+
+.selectWrap:focus-within .chevron {
+  color: var(--cf-lime);
+}
+
+/* Where the browser supports styling the dropdown itself (customizable
+   <select>), it gets a dark panel that fades and slides open, and a lime tick
+   on the chosen topic. Everywhere else the native list is used. */
+@supports (appearance: base-select) {
+  .select,
+  .select::picker(select) {
+    appearance: base-select;
+  }
+
+  .select::picker-icon {
+    display: none;
+  }
+
+  .select:open + .chevron {
+    rotate: 180deg;
+  }
+
+  .select::picker(select) {
+    margin-top: 0.4rem;
+    padding: 0.35rem;
+    border: 1px solid var(--cf-rule);
+    border-radius: 0.75rem;
+    background: rgb(12 8 36 / 0.96);
+    box-shadow: 0 24px 50px rgb(0 0 0 / 0.45);
+    opacity: 0;
+    translate: 0 -0.35rem;
+    transition:
+      opacity 0.2s ease,
+      translate 0.2s ease,
+      overlay 0.2s allow-discrete,
+      display 0.2s allow-discrete;
+  }
+
+  .select:open::picker(select) {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  @starting-style {
+    .select:open::picker(select) {
+      opacity: 0;
+      translate: 0 -0.35rem;
+    }
+  }
+
+  .select option {
+    padding: 0.6rem 0.75rem;
+    border-radius: 0.5rem;
+    background: transparent;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+
+  .select option:hover,
+  .select option:focus-visible {
+    outline: none;
+    background: rgb(243 239 255 / 0.08);
+  }
+
+  .select option:checked {
+    color: var(--cf-lime);
+  }
+
+  .select option::checkmark {
+    color: var(--cf-lime);
+  }
+
+  .select option:disabled {
+    display: none;
+  }
+}
+
+/* --- Send --- */
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.75rem;
+  margin-top: 0.25rem;
+}
+
+.submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 3rem;
+  padding: 0 1.5rem;
+  border: 1px solid var(--cf-lime);
+  border-radius: 999px;
+  background: var(--cf-lime);
+  color: #13072e;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    translate 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.submit:hover:not([aria-disabled="true"]) {
+  border-color: var(--cf-lime-hover);
+  background: var(--cf-lime-hover);
+  translate: 0 -2px;
+}
+
+.submit:active:not([aria-disabled="true"]) {
+  translate: 0 0;
+}
+
+.submit:focus-visible {
+  outline: 2px solid var(--cf-lime);
+  outline-offset: 3px;
+}
+
+.submit[aria-disabled="true"] {
+  cursor: progress;
+  opacity: 0.75;
+}
+
+.arrow {
+  display: inline-block;
+  transition: translate 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.submit:hover .arrow,
+.submit:focus-visible .arrow {
+  translate: 3px -3px;
+}
+
+.spinner {
+  width: 0.9rem;
+  height: 0.9rem;
+  border: 1.5px solid rgb(19 7 46 / 0.3);
+  border-top-color: #13072e;
+  border-radius: 50%;
+  animation: cf-spin 0.8s linear infinite;
+}
+
+@keyframes cf-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+/* --- The handwritten aside, with an arrow back to the button --- */
+
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.35rem;
+  color: var(--cf-muted);
+  font-family: var(--footer-font-script), cursive;
+  font-size: clamp(1.25rem, 1.8vw, 1.45rem);
+  line-height: 1.1;
+  rotate: -3deg;
+}
+
+.note svg {
+  flex-shrink: 0;
+  width: 2.4rem;
+  height: auto;
+  margin-top: -0.2rem;
+  color: var(--cf-lime);
+  opacity: 0.85;
+}
+
+.note span {
+  margin-top: 0.6rem;
+}
+
+/* rises in gently as it scrolls into view, where the browser can do that in CSS */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .note {
+      animation: cf-note-in linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 30%;
+    }
+  }
+}
+
+@keyframes cf-note-in {
+  from {
+    opacity: 0;
+    translate: 0 0.75rem;
+  }
+}
+
+/* --- Result --- */
+
+.status:empty {
+  display: none;
+}
+
+.status {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.status[data-state="sent"] {
+  color: var(--cf-lime);
+}
+
+.status[data-state="error"] {
+  color: var(--cf-error);
+}
+
+/* --- Utilities --- */
+
+.honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .control,
+  .label,
+  .chevron,
+  .submit,
+  .arrow {
+    transition: none;
+  }
+
+  /* on its own: browsers without ::picker() would drop a whole list containing it */
+  @supports (appearance: base-select) {
+    .select::picker(select) {
+      transition: none;
+    }
+  }
+
+  .submit:hover:not([aria-disabled="true"]),
+  .submit:hover .arrow,
+  .submit:focus-visible .arrow {
+    translate: none;
+  }
+
+  .spinner {
+    animation-duration: 2s;
+  }
+}

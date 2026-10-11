@@ -1,5 +1,6 @@
 import { github } from "@/content/portfolio";
-import { siteConfig } from "@/lib/site";
+import { getGithubActivity, githubLogin, type GithubActivityData } from "@/lib/github";
+import { findProfile } from "@/lib/site";
 import FloatingObject from "@/components/ui/FloatingObject";
 import GlassCard from "@/components/ui/GlassCard";
 import SectionLabel from "@/components/ui/SectionLabel";
@@ -8,31 +9,29 @@ import Scene from "./Scene";
 import s from "./scenes.module.css";
 import styles from "./github.module.css";
 
-// ---- The shape real data will arrive in (e.g. from the GitHub GraphQL API) ----
-export type ContributionDay = { date: string; count: number; level: 0 | 1 | 2 | 3 | 4 };
+const profile = findProfile("github.com");
+const login = profile && githubLogin(profile);
 
-export type GithubActivityData = {
-  totalContributions: number;
-  /** Oldest week first; each week Sunday → Saturday. */
-  weeks: ContributionDay[][];
-  publicRepos: number;
-  topLanguages: { name: string; share: number }[];
-  recentRepos: { name: string; url: string; description: string | null; pushedAt: string }[];
+const dayLabel = (count: number, date: string) => {
+  const day = new Date(`${date}T00:00:00Z`).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+  return `${count === 0 ? "No" : count} contribution${count === 1 ? "" : "s"} on ${day}`;
 };
 
-const WEEKS = 53;
-const profile = siteConfig.socials.find((url) => new URL(url).hostname.endsWith("github.com"));
-
-// Pass `data` once it's fetched; until then every cell is empty and every
-// number is a dash — nothing is made up.
-export default function GithubActivitySection({ data }: { data?: GithubActivityData }) {
-  const weeks =
-    data?.weeks ?? Array.from({ length: WEEKS }, () => Array.from({ length: 7 }, () => null));
+// Server-rendered from GitHub's public data (lib/github.ts, cached for hours).
+// Anything that couldn't be loaded shows as "—" or a plain fallback — never made up.
+export default async function GithubActivitySection() {
+  const data: GithubActivityData | null = login ? await getGithubActivity(login) : null;
+  const calendar = data?.calendar ?? null;
 
   const stats = [
-    { label: "Contributions this year", value: data?.totalContributions },
+    { label: "Contributions, last 12 months", value: calendar?.totalContributions.toLocaleString("en-IN") },
     { label: "Public repositories", value: data?.publicRepos },
-    { label: "Top language", value: data?.topLanguages[0]?.name },
+    { label: "Most-used language", value: data?.topLanguage },
   ];
 
   return (
@@ -53,23 +52,52 @@ export default function GithubActivitySection({ data }: { data?: GithubActivityD
             ))}
           </dl>
 
-          <div
-            className={styles.grid}
-            role="img"
-            aria-label={data ? `${data.totalContributions} contributions in the last year` : "Contribution graph, not connected yet"}
-          >
-            {weeks.map((week, w) =>
-              week.map((day, d) => (
-                <span key={`${w}-${d}`} className={styles.cell} data-level={day?.level ?? "empty"} />
-              )),
-            )}
-          </div>
+          {calendar ? (
+            // row-reverse: on narrow screens the scroller opens on the most recent weeks
+            <div className={styles.scroller} tabIndex={0} aria-label="Contribution graph, scrollable">
+              <div
+                className={styles.grid}
+                role="img"
+                aria-label={`${calendar.totalContributions} contributions on GitHub in the last 12 months, by ${login}`}
+              >
+                {calendar.weeks.map((week, w) =>
+                  week.map((day, d) =>
+                    day ? (
+                      <span
+                        key={`${w}-${d}`}
+                        className={styles.cell}
+                        data-level={day.level}
+                        title={dayLabel(day.count, day.date)}
+                      />
+                    ) : (
+                      <span key={`${w}-${d}`} className={styles.cell} data-level="none" />
+                    ),
+                  ),
+                )}
+              </div>
+            </div>
+          ) : (
+            <p className={styles.fallback} role="status">
+              The contribution graph couldn&apos;t be loaded from GitHub right now — it&apos;s always up to date on the
+              profile.
+            </p>
+          )}
 
           <div className={styles.footer}>
-            <p className={s.soon}>{data ? "Last 12 months" : "GitHub data will be connected"}</p>
+            {calendar ? (
+              <div className={styles.legend} aria-hidden="true">
+                <span className={s.soon}>Less</span>
+                {[0, 1, 2, 3, 4].map((level) => (
+                  <span key={level} className={styles.cell} data-level={level} />
+                ))}
+                <span className={s.soon}>More</span>
+              </div>
+            ) : (
+              <span />
+            )}
             {profile && (
               <a className={`${styles.profile} ${s.focusable}`} href={profile} target="_blank" rel="noopener noreferrer">
-                View profile ↗
+                View GitHub profile ↗
               </a>
             )}
           </div>

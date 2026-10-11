@@ -50,12 +50,12 @@ export const siteConfig = {
   // Timezone for the footer's live clock — always shown in this zone, not the visitor's.
   timeZone: "Asia/Kolkata",
 
-  email: "hello@example.com", // PLACEHOLDER: your contact email (footer CTA)
+  email: "hello@example.com", // PLACEHOLDER: your contact email (footer links) — see contactEmail below
 
-  // PLACEHOLDER: your public profile URLs (footer buttons, and JSON-LD "sameAs"
-  // once they're real — see publicProfiles below).
+  // Public profile URLs (footer links, GitHub section, JSON-LD "sameAs").
+  // The GitHub login is verified against the GitHub API (name, blog → this site).
   socials: [
-    "https://github.com/nitin-cyperpunk",
+    "https://github.com/Nitin-cyperpunk",
     "https://www.linkedin.com/in/itsnitinsingh66/",
   ],
 };
@@ -65,3 +65,10 @@ export const siteConfig = {
 export const publicProfiles = siteConfig.socials.filter(
   (url) => !url.includes("your-username"),
 );
+
+// The address to show as a mailto link, or null while it's still the
+// placeholder — so no fake address is ever published.
+export const contactEmail = siteConfig.email.endsWith("@example.com") ? null : siteConfig.email;
+
+export const findProfile = (host: string) =>
+  publicProfiles.find((url) => new URL(url).hostname.endsWith(host)) ?? null;

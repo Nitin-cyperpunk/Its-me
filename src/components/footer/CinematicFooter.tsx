@@ -1,7 +1,8 @@
-import { Barlow_Condensed, Host_Grotesk } from "next/font/google";
+import { Barlow_Condensed, Caveat, Host_Grotesk } from "next/font/google";
 import { headers } from "next/headers";
-import { siteConfig } from "@/lib/site";
+import { contactEmail, findProfile, siteConfig } from "@/lib/site";
 import { VISITOR_HEADER } from "@/lib/visitor";
+import ContactForm from "./ContactForm";
 import FooterScene from "./FooterScene";
 import VisitorInfo from "./VisitorInfo";
 
@@ -17,23 +18,30 @@ const body = Host_Grotesk({
   variable: "--footer-font-body",
 });
 
-const findSocial = (host: string) =>
-  siteConfig.socials.find((url) => new URL(url).hostname.endsWith(host));
+// the handwritten aside under the contact form (same face as the hero's notes)
+const script = Caveat({
+  weight: "700",
+  subsets: ["latin"],
+  variable: "--footer-font-script",
+});
 
-const github = findSocial("github.com");
-const linkedin = findSocial("linkedin.com");
-const email = `mailto:${siteConfig.email}`;
+const github = findProfile("github.com");
+const linkedin = findProfile("linkedin.com");
+// only a real, configured address is ever linked (see contactEmail in lib/site.ts)
+const email = contactEmail && `mailto:${contactEmail}`;
 
 const links = [
   github && { label: "GitHub", href: github },
   linkedin && { label: "LinkedIn", href: linkedin },
-  { label: "Email", href: email },
+  email && { label: "Email", href: email },
 ].filter((link): link is { label: string; href: string } => Boolean(link));
 
 const button =
   "inline-flex min-h-12 items-center gap-2 rounded-full border px-[1.4rem] text-[0.95rem] font-medium transition sm:backdrop-blur-sm duration-250 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-lime motion-reduce:transition-none motion-reduce:hover:translate-y-0";
 const ghostButton = `${button} border-mist/30 bg-[rgb(20_12_50/0.6)] text-mist sm:bg-[rgb(20_12_50/0.35)] hover:border-mist/60 hover:bg-[rgb(40_24_90/0.5)]`;
-const primaryButton = `${button} border-lime bg-lime text-[#13072e] hover:border-[#d6f56a] hover:bg-[#d6f56a]`;
+// the arrow leans the way the link goes on hover
+const arrow =
+  "inline-block transition-transform duration-300 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-focus-visible:translate-x-0.5 group-focus-visible:-translate-y-0.5 motion-reduce:transition-none motion-reduce:group-hover:transform-none";
 // mask for each line's reveal; the padding keeps descenders from being clipped
 const line = "-my-[0.04em] block overflow-hidden py-[0.04em]";
 
@@ -51,54 +59,55 @@ export default async function CinematicFooter() {
 
   return (
     <FooterScene
-      className={`${display.variable} ${body.variable} relative isolate flex min-h-[max(100svh,40rem)] flex-col overflow-clip bg-night font-[family-name:var(--footer-font-body)] text-mist lg:min-h-[max(115svh,44rem)]`}
+      className={`${display.variable} ${body.variable} ${script.variable} relative isolate flex min-h-[max(100svh,40rem)] flex-col overflow-clip bg-night font-[family-name:var(--footer-font-body)] text-mist lg:min-h-[max(115svh,44rem)]`}
     >
       <div className="relative z-2 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-between gap-16 px-[clamp(1rem,5vw,5rem)] pt-[clamp(9rem,24svh,16rem)] pb-[clamp(1.5rem,4vw,2.5rem)]">
-        <div data-cta>
-          <p className="mb-5 font-mono text-xs tracking-[0.24em] text-mist/70 uppercase">End of the scroll</p>
+        {/* phones/tablets: headline, then the form; desktop: side by side */}
+        <div
+          data-cta
+          className="grid gap-[clamp(3rem,8vw,4.5rem)] lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:items-start lg:gap-[clamp(3rem,6vw,7rem)]"
+        >
+          <div>
+            <p className="mb-5 font-mono text-xs tracking-[0.24em] text-mist/70 uppercase">End of the scroll</p>
 
-          <h2 className="font-[family-name:var(--footer-font-display)] text-[clamp(3.5rem,11vw,10rem)] leading-[0.86] font-extrabold tracking-[-0.01em] uppercase [text-shadow:0_0.08em_0.6em_rgb(7_5_26/0.45)]">
-            <span className={line}>
-              <span className="block" data-cta-line>
-                Let&apos;s build
+            <h2 className="font-[family-name:var(--footer-font-display)] text-[clamp(3.5rem,11vw,10rem)] leading-[0.86] font-extrabold tracking-[-0.01em] uppercase [text-shadow:0_0.08em_0.6em_rgb(7_5_26/0.45)] lg:text-[clamp(4.5rem,7.2vw,8rem)]">
+              <span className={line}>
+                <span className="block" data-cta-line>
+                  Let&apos;s build
+                </span>
               </span>
-            </span>
-            <span className={line}>
-              <span className="block text-lime" data-cta-line>
-                something.
+              <span className={line}>
+                <span className="block text-lime" data-cta-line>
+                  something.
+                </span>
               </span>
-            </span>
-          </h2>
+            </h2>
 
-          <p className="mt-7 max-w-md text-[clamp(1rem,1.4vw,1.2rem)] leading-normal text-mist/80">
-            Have an idea, a product, or just want to talk?
-          </p>
+            <p className="mt-7 max-w-md text-[clamp(1rem,1.4vw,1.2rem)] leading-normal text-mist/80">
+              Have an idea, a role in mind, or just want to talk? My inbox is open.
+            </p>
 
-          <div className="mt-9 flex flex-wrap gap-3">
-            <a className={primaryButton} href={email}>
-              Start a conversation
-              <span aria-hidden="true">→</span>
-            </a>
-            {github && (
-              <a
-                className={ghostButton}
-                href={github}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View GitHub
-              </a>
-            )}
-            {linkedin && (
-              <a
-                className={ghostButton}
-                href={linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                LinkedIn
-              </a>
-            )}
+            <div className="mt-9 flex flex-wrap gap-3">
+              {links.map((link) => (
+                <a
+                  key={link.label}
+                  className={`group ${ghostButton}`}
+                  href={link.href}
+                  {...(link.href.startsWith("http")
+                    ? { target: "_blank", rel: "noopener noreferrer" }
+                    : {})}
+                >
+                  {link.label}
+                  <span aria-hidden="true" className={arrow}>
+                    ↗
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div className="w-full max-w-xl lg:max-w-none lg:pt-[clamp(1.5rem,3vw,3rem)]">
+            <ContactForm />
           </div>
         </div>
 
