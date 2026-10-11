@@ -19,12 +19,6 @@ export const heroText = {
   controlsNote: "rearrange my desk",
 };
 
-// Plug a playlist / track URL in here and the player becomes a link to it.
-export const heroMusic: { provider: "spotify"; url: string | null } = {
-  provider: "spotify",
-  url: null,
-};
-
 /** Centre point in % of the scene, rotation in degrees, scale as a multiplier of `width`. */
 export type Pose = { x: number; y: number; rotation: number; scale: number };
 
@@ -62,7 +56,8 @@ type ImageFields = {
 };
 
 export type ImageAsset = BaseAsset & ImageFields & { kind: "image" };
-export type MusicAsset = BaseAsset & ImageFields & { kind: "music" };
+/** The working music player card (its playlist is set in src/config/music.ts). */
+export type MusicAsset = BaseAsset & { kind: "music" };
 export type ProjectAsset = BaseAsset & {
   kind: "project";
   variant: "ticket" | "print" | "browser" | "workflow" | "sticky";
@@ -381,9 +376,6 @@ export const heroAssets: HeroAsset[] = [
   {
     id: "music",
     kind: "music",
-    src: `${OBJECTS}/music_player.png`,
-    intrinsic: [344, 318],
-    alt: "Music player showing Good Days by SZA",
     caption: "on repeat",
     width: 13,
     default: { x: 87, y: 57, rotation: 7, scale: 1 },

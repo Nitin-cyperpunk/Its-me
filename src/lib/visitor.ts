@@ -12,11 +12,15 @@ export const VISITOR_HEADER = "x-portfolio-visitor";
 /** How long a browser keeps its number (the "visitor period"). */
 export const VISITOR_MAX_AGE = 60 * 60 * 24 * 365;
 
-// Development never touches the real count.
+// Only the live site touches the real count. NODE_ENV can't tell: Vercel
+// preview deployments and a local `next start` are "production" too, and
+// would inflate it. VERCEL_ENV is set by Vercel on every deployment.
 const COUNTER_KEY =
-  process.env.NODE_ENV === "production"
+  process.env.VERCEL_ENV === "production"
     ? "portfolio:visitors"
-    : "portfolio:visitors:dev";
+    : process.env.VERCEL_ENV === "preview"
+      ? "portfolio:visitors:preview"
+      : "portfolio:visitors:dev";
 
 const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
 const token =

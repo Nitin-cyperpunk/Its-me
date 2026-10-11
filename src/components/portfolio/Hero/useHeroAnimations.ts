@@ -434,6 +434,10 @@ function setupHero(root: HTMLElement, setup: Setup) {
       // stacking is decided on the outer element, which owns the z-index
       zIndexBoost: false,
       allowContextMenu: true,
+      // Presses inside [data-no-drag] (the music player's controls) are clicks,
+      // never drags. Everything else drags exactly as before — links included.
+      dragClickables: false,
+      clickableTest: (target) => Boolean((target as Element).closest?.("[data-no-drag]")),
       onPress() {
         el.style.zIndex = String(++topZ); // stays on top, like the last thing you put down
         state.drag = dragging = true;

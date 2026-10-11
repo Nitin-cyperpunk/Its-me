@@ -39,7 +39,7 @@ export default function InteractiveAsset({ asset }: { asset: HeroAsset }) {
     </span>
   );
 
-  const image = asset.kind !== "project" && (
+  const image = asset.kind === "image" && (
     <Image
       src={asset.src}
       width={asset.intrinsic[0]}
@@ -68,7 +68,6 @@ export default function InteractiveAsset({ asset }: { asset: HeroAsset }) {
                   </ProjectCard>
                 ) : asset.kind === "music" ? (
                   <MusicPlayer className={contentClass} style={contentStyle}>
-                    {image}
                     {caption}
                   </MusicPlayer>
                 ) : (
