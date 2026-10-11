@@ -59,7 +59,18 @@ export const metadata: Metadata = {
     title: `${siteConfig.name} — ${siteConfig.jobTitle}`,
     description: siteConfig.shareDescription,
   },
-  // Favicon: src/app/favicon.ico is picked up by the file convention.
+  // Favicons live in public/favicon/ (referenced in place, not file conventions).
+  // The 192/512 icons are in the web manifest (manifest.ts); /favicon.ico at the
+  // root is rewritten to the same file in next.config.ts.
+  icons: {
+    icon: [
+      { url: "/favicon/favicon.ico", sizes: "any" },
+      { url: "/favicon/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon/favicon-48x48.png", sizes: "48x48", type: "image/png" },
+    ],
+    apple: [{ url: "/favicon/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
   // Google Search Console: if you verify with the HTML-tag method, add
   //   verification: { google: "<token from Search Console>" },
   // (not needed when verifying with the DNS record for nitinverse.me).
