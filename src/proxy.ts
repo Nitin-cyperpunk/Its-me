@@ -18,6 +18,8 @@ function shouldCount(request: NextRequest) {
   return (
     visitorCounterEnabled &&
     request.method === "GET" &&
+    // only full page loads: in-app (RSC) navigations back to "/" aren't new visits
+    !h.has("rsc") &&
     !h.has("next-router-prefetch") &&
     h.get("purpose") !== "prefetch" &&
     !h.get("sec-purpose")?.includes("prefetch") &&

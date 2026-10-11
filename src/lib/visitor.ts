@@ -12,25 +12,46 @@ export const VISITOR_HEADER = "x-portfolio-visitor";
 /** How long a browser keeps its number (the "visitor period"). */
 export const VISITOR_MAX_AGE = 60 * 60 * 24 * 365;
 
-// Only the live site touches the real count. NODE_ENV can't tell: Vercel
-// preview deployments and a local `next start` are "production" too, and
-// would inflate it. VERCEL_ENV is set by Vercel on every deployment.
+// Only the live site touches the real count. NODE_ENV alone can't tell:
+// Vercel preview deployments are "production" too and would inflate it.
+// VERCEL_ENV is set on Vercel deployments; without it (self-hosting, or system
+// env vars switched off) NODE_ENV decides, as before.
+const deployment = process.env.VERCEL_ENV ?? (process.env.NODE_ENV === "production" ? "production" : "development");
 const COUNTER_KEY =
-  process.env.VERCEL_ENV === "production"
+  deployment === "production"
     ? "portfolio:visitors"
-    : process.env.VERCEL_ENV === "preview"
+    : deployment === "preview"
       ? "portfolio:visitors:preview"
       : "portfolio:visitors:dev";
 
-const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
-const token =
-  process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
-const secret = process.env.VISITOR_COOKIE_SECRET;
+// Values pasted into a dashboard often carry a stray space or newline, which
+// silently breaks the URL or the token — so trim. Both naming conventions work:
+// UPSTASH_REDIS_REST_* (Upstash) and KV_REST_API_* (Vercel's Upstash integration).
+const read = (...names: string[]) => names.map((n) => process.env[n]?.trim()).find(Boolean);
+const url = read("UPSTASH_REDIS_REST_URL", "KV_REST_API_URL");
+const token = read("UPSTASH_REDIS_REST_TOKEN", "KV_REST_API_TOKEN");
+const secret = read("VISITOR_COOKIE_SECRET");
 
-/** Without credentials the footer just shows its neutral fallback. */
-export const visitorCounterEnabled = Boolean(
-  url && token && secret && secret.length >= 32,
-);
+// Why the counter is off, by variable name only — never a value.
+function configProblem() {
+  const missing = [
+    !url && "UPSTASH_REDIS_REST_URL (or KV_REST_API_URL)",
+    !token && "UPSTASH_REDIS_REST_TOKEN (or KV_REST_API_TOKEN)",
+    !secret && "VISITOR_COOKIE_SECRET",
+  ].filter(Boolean);
+  if (missing.length) return `missing ${missing.join(", ")}`;
+  if (!/^https:\/\//i.test(url!))
+    return "the Redis URL must be the REST URL (https://…upstash.io), not a redis:// or rediss:// connection string";
+  if (secret!.length < 32) return `VISITOR_COOKIE_SECRET is ${secret!.length} characters; it needs at least 32`;
+  return null;
+}
+const problem = configProblem();
+
+/** Without a working configuration the footer just shows its neutral fallback. */
+export const visitorCounterEnabled = problem === null;
+
+// Logged once per server start, so it shows up in the deployment's logs.
+if (problem) console.warn(`[visitor] counter disabled (${deployment}): ${problem}`);
 
 // One retry at most: this runs before the page renders, so fail fast.
 const redis = visitorCounterEnabled
