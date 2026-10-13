@@ -140,10 +140,29 @@
   margin-top: 1.25rem;
   font-family: var(--nv-font-display), sans-serif;
   font-size: clamp(2.6rem, 7vw, 7rem);
-  font-weight: var(--weight-heading);
+  font-weight: var(--weight-section-heading);
   line-height: 1;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.03em;
   text-wrap: balance;
+}
+
+/* The rule: the last line of a multi-line heading is its accent, in the theme
+   gradient (globals.css). Vertical, so it reads as one continuous wash across
+   the separately masked words. */
+.headingLine:last-child:not(:first-child) .word {
+  color: var(--heading-accent);
+}
+
+@supports ((background-clip: text) or (-webkit-background-clip: text)) {
+  .headingLine:last-child:not(:first-child) .word {
+    /* the painted box reaches below the baseline, so descenders keep their colour */
+    padding-bottom: 0.1em;
+    margin-bottom: -0.1em;
+    background: var(--heading-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
 }
 
 .headingLine {

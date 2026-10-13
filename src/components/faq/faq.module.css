@@ -45,7 +45,7 @@
   margin: 0 auto clamp(3rem, 8vw, 6rem);
   font-family: var(--font-display);
   font-size: clamp(2.75rem, 8vw, 7.5rem);
-  font-weight: 500;
+  font-weight: var(--weight-section-heading);
   line-height: 1;
   letter-spacing: -0.03em;
   text-wrap: balance;
@@ -55,6 +55,19 @@
 .title span {
   display: block;
   padding-left: 0.6em;
+  /* the heading's accent line, like every section heading (scenes.module.css) */
+  color: var(--heading-accent);
+}
+
+@supports ((background-clip: text) or (-webkit-background-clip: text)) {
+  .title span {
+    padding-bottom: 0.1em;
+    margin-bottom: -0.1em;
+    background: var(--heading-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
 }
 
 .faq :global(.faq-container) {

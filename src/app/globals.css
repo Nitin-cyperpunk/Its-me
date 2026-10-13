@@ -32,6 +32,12 @@
   --weight-subheading: 500;
   --weight-body: 400;
   --weight-label: 500;
+  /* section headings: large, so a regular weight carries them */
+  --weight-section-heading: 400;
+
+  /* the accent line of a section heading: deep indigo into muted violet */
+  --heading-gradient: linear-gradient(180deg, #232a73 0%, #3d4bbf 55%, #6d5fc7 100%);
+  --heading-accent: #3d4bbf; /* solid fallback where gradient text isn't supported */
 }
 
 /* deep navy, royal-blue glass, off-white type, a soft electric-blue accent */
@@ -45,6 +51,10 @@
   --accent: #7f9bff;
   --accent-soft: rgb(90 125 255 / 0.2);
   --shadow: rgb(0 3 20 / 0.6);
+
+  /* soft white into lavender-blue on navy */
+  --heading-gradient: linear-gradient(180deg, #f3f4ff 0%, #ccd2fc 50%, #9ea8f4 100%);
+  --heading-accent: #c3c9fb;
 }
 
 @theme inline {
