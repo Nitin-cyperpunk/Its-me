@@ -2,9 +2,10 @@
 // Neon (lib/db.ts) and shaped exactly like the built-in content the sections
 // already render (content/portfolio.ts).
 //
-// Freshness: each table is read once, then cached for REVALIDATE seconds and
-// shared by every visitor (stale-while-revalidate). An edit in the database
-// shows up within that window, or immediately after POST /api/revalidate.
+// Freshness: in production each table is read once, then cached for
+// REVALIDATE seconds (5 min) and shared by every visitor (stale-while-
+// revalidate) — an edit in the database shows up within that window, or on the
+// next visit after POST /api/revalidate. In development nothing is cached.
 //
 // Fallback: if the database isn't configured, can't be reached, or a table has
 // no published rows yet, that section shows the built-in content instead — a
@@ -26,7 +27,9 @@ import { skillIcon } from "./skill-icons";
 
 export const CONTENT_TAG = "portfolio-content";
 /** Seconds a read is reused before it's refreshed in the background. */
-const REVALIDATE = 60 * 60;
+const REVALIDATE = 5 * 60;
+// Locally, every request reads the database, so edits show on refresh.
+const UNCACHED = process.env.NODE_ENV === "development";
 
 // Dates come back as plain strings (to_char / ::text), so cached values
 // round-trip through JSON unchanged.
@@ -36,7 +39,7 @@ const cached = <T>(name: string, read: () => Promise<T>) =>
 async function load<T>(name: string, read: () => Promise<T>): Promise<T | null> {
   if (!getDb()) return null;
   try {
-    return await cached(name, read)();
+    return UNCACHED ? await read() : await cached(name, read)();
   } catch (error) {
     console.error(`[content] couldn't read ${name} from the database; using built-in content.`, error);
     return null;

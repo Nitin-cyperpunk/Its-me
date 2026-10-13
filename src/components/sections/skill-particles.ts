@@ -1,7 +1,7 @@
 // Particles for the skills constellation (desktop): at rest they sit as faint
 // beads along the constellation's own threads; when a skill is selected they
 // fly into its shape — a database cylinder, or the outline of its brand logo —
-// and drift back to the threads when it's released.
+// (a dot matrix of the filled logo) — and drift back to the threads when released.
 //
 // One small canvas, drawn only while something moves. GSAP (already used by
 // the scenes) does the tweening; re-targeting mid-flight is smooth because each
@@ -10,10 +10,12 @@
 import { gsap } from "@/lib/animations/gsap";
 
 export type Shape = { kind: "database" } | { kind: "icon"; path: string };
+/** A brand colour; dark = near-black, shown in the theme's ink on the dark theme. */
+export type Brand = { color: string; dark: boolean } | null;
 type Point = { x: number; y: number };
 type Particle = Point & { r: number; a: number };
 
-const COUNT = 120;
+const COUNT = 170;
 
 // --- geometry -----------------------------------------------------------------
 
@@ -63,33 +65,45 @@ function cylinder(cx: number, cy: number, size: number, n: number): Point[] {
   );
 }
 
-// one detached <path> for measuring logo outlines
-let probe: SVGPathElement | null = null;
-
-/** Points along the outline of a 24×24 brand icon, scaled into a size×size box. */
-function iconOutline(d: string, cx: number, cy: number, size: number, n: number): Point[] | null {
-  if (!probe) {
-    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("width", "0");
-    svg.setAttribute("height", "0");
-    svg.style.position = "absolute";
-    svg.style.visibility = "hidden";
-    probe = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    svg.appendChild(probe);
-    document.body.appendChild(svg);
-  }
-  probe.setAttribute("d", d);
-  let length = 0;
+/**
+ * A brand logo as a dot matrix: the 24×24 icon is filled on a small off-screen
+ * canvas and dots go on an even grid wherever the logo is solid — far more
+ * recognisable than dots strung along a compound outline.
+ */
+function iconFill(d: string, cx: number, cy: number, size: number, n: number): Point[] | null {
+  const RES = 64;
+  const raster = document.createElement("canvas");
+  raster.width = RES;
+  raster.height = RES;
+  const ctx = raster.getContext("2d", { willReadFrequently: true });
+  if (!ctx || typeof Path2D === "undefined") return null;
+  ctx.scale(RES / 24, RES / 24);
   try {
-    length = probe.getTotalLength();
+    ctx.fill(new Path2D(d));
   } catch {
     return null;
   }
-  if (!length) return null;
-  const k = size / 24;
+  const alpha = ctx.getImageData(0, 0, RES, RES).data;
+  const solid = (x: number, y: number) => alpha[(Math.floor(y) * RES + Math.floor(x)) * 4 + 3] > 128;
+
+  // the grid spacing whose dot count lands closest to n
+  const grid = (step: number) => {
+    const pts: Point[] = [];
+    for (let y = step / 2; y < RES; y += step) for (let x = step / 2; x < RES; x += step) if (solid(x, y)) pts.push({ x, y });
+    return pts;
+  };
+  let best = grid(2);
+  for (let step = 1.5; step <= 8; step += 0.25) {
+    const pts = grid(step);
+    if (Math.abs(pts.length - n) < Math.abs(best.length - n)) best = pts;
+  }
+  if (!best.length) return null;
+
+  const k = size / RES;
+  // exactly n points: thin evenly if there are more, double up if fewer
   return Array.from({ length: n }, (_, i) => {
-    const p = probe!.getPointAtLength(((i + 0.5) / n) * length);
-    return { x: cx + (p.x - 12) * k, y: cy + (p.y - 12) * k };
+    const p = best[Math.floor((i * best.length) / n)];
+    return { x: cx + (p.x - RES / 2) * k, y: cy + (p.y - RES / 2) * k };
   });
 }
 
@@ -107,6 +121,7 @@ export function createParticles(
   let width = 0;
   let height = 0;
   let shape: Shape | null = null;
+  let brand: Brand = null;
   let color = "#7f9bff";
 
   const draw = () => {
@@ -122,8 +137,12 @@ export function createParticles(
     ctx.globalAlpha = 1;
   };
 
+  // resting pattern: the theme accent; a formation: the selected brand's colour
   const readColor = () => {
-    color = getComputedStyle(canvas).getPropertyValue("--nv-accent").trim() || color;
+    const css = getComputedStyle(canvas);
+    const accent = css.getPropertyValue("--nv-accent").trim() || color;
+    const darkTheme = document.documentElement.dataset.theme === "dark";
+    color = shape && brand ? (brand.dark && darkTheme ? css.getPropertyValue("--nv-ink").trim() : brand.color) : accent;
   };
 
   // where each particle should be for the current state
@@ -135,8 +154,8 @@ export function createParticles(
       const pts =
         shape.kind === "database"
           ? cylinder(cx, cy, size, COUNT)
-          : iconOutline(shape.path, cx, cy, size, COUNT);
-      if (pts) return pts.map((p) => ({ ...p, r: 1.9, a: 0.95 }));
+          : iconFill(shape.path, cx, cy, size, COUNT);
+      if (pts) return pts.map((p) => ({ ...p, r: shape!.kind === "database" ? 1.9 : 2.3, a: 0.95 }));
     }
     const lines = threads.map(([a, b]) => [
       { x: (a.x / 100) * width, y: (a.y / 100) * height },
@@ -190,12 +209,16 @@ export function createParticles(
   themer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
   return {
-    form(next: Shape) {
+    form(next: Shape, nextBrand: Brand = null) {
       shape = next;
+      brand = nextBrand;
+      readColor();
       settle(false);
     },
     release() {
       shape = null;
+      brand = null;
+      readColor();
       settle(false);
     },
     destroy() {

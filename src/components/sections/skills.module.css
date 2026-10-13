@@ -175,9 +175,16 @@
 
 .icon {
   flex-shrink: 0;
-  width: 1.05em;
-  height: 1.05em;
-  fill: currentColor;
+  width: 1.15em;
+  height: 1.15em;
+  /* the brand's official colour; generic glyphs (no --brand) use the accent */
+  fill: var(--brand, var(--nv-accent));
+}
+
+/* near-black marks (Next.js, GitHub, Vercel, Express) go light on the dark
+   theme — the inverted version those brands use on dark backgrounds */
+:global(:root[data-theme="dark"]) .icon[data-dark-brand] {
+  fill: var(--nv-ink);
 }
 
 /* --- particle formations (desktop) --- */

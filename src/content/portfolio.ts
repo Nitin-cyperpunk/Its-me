@@ -80,7 +80,7 @@ export type Skill = {
   x: number;
   y: number;
   /** From the database: brand icon (24×24 SVG path), and the shape its particles form when selected. */
-  icon?: { title: string; path: string } | null;
+  icon?: { title: string; path: string; color: string | null; darkBrand: boolean } | null;
   shape?: "database" | "icon" | null;
 };
 

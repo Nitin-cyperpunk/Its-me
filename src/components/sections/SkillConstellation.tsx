@@ -96,7 +96,11 @@ function constellation(root: HTMLElement, motion: Motion) {
       const node = nodes[index];
       const shape: Shape =
         node.dataset.shape === "database" ? { kind: "database" } : { kind: "icon", path: node.dataset.path ?? "" };
-      particles?.form(shape);
+      // the formation takes the brand's colour (near-black marks follow the theme)
+      particles?.form(
+        shape,
+        node.dataset.color ? { color: node.dataset.color, dark: node.dataset.darkBrand !== undefined } : null,
+      );
     }
     detail.textContent = resting();
   };
@@ -177,12 +181,21 @@ export default function SkillConstellation({ items, category }: { items: Skill[]
                 data-y={skill.y}
                 data-shape={skill.shape ?? undefined}
                 data-path={skill.shape === "icon" ? skill.icon?.path : undefined}
+                data-color={skill.icon?.color ?? undefined}
+                data-dark-brand={skill.icon?.darkBrand || undefined}
                 data-reveal="item"
               >
                 {/* the visible face: its CSS scale stays clear of GSAP's transforms on the button */}
                 <span className={styles.face}>
                   {skill.icon && (
-                    <svg className={styles.icon} viewBox="0 0 24 24" aria-hidden="true">
+                    <svg
+                      className={styles.icon}
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                      // the brand's own colour; generic glyphs use the theme accent
+                      style={skill.icon.color ? ({ "--brand": skill.icon.color } as CSSProperties) : undefined}
+                      data-dark-brand={skill.icon.darkBrand || undefined}
+                    >
                       <path d={skill.icon.path} />
                     </svg>
                   )}
