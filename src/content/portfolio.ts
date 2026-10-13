@@ -27,6 +27,10 @@ export type Experience = {
   summary: string | null;
   /** Company logo (from the database); shown when present. */
   logoUrl?: string | null;
+  /** From the database: a stable key, responsibilities and technologies. */
+  id?: string;
+  highlights?: string[];
+  technologies?: string[];
 };
 
 // Four onsite internships (from the FAQ). Names, roles and dates to be added.

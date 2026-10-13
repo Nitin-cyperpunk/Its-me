@@ -57,16 +57,20 @@ const label = (value: string | null) => (value ? value.charAt(0).toUpperCase() +
 function period(start: string | null, end: string | null, current: boolean) {
   const from = month(start);
   const to = current ? "Present" : month(end);
-  return from && to ? `${from} – ${to}` : from ?? to;
+  if (from && to) return `${from} – ${to}`;
+  // only one end known: say exactly that, never imply the role is ongoing
+  if (from) return `Started ${from}`;
+  return to ? `Until ${to}` : null;
 }
 
 export async function getExperiences(): Promise<Experience[]> {
   const rows = await load("experiences", () =>
     sql().query(`
-      select coalesce(c.name, e.company_name)              as company_name,
+      select e.id::text                                    as id,
+             coalesce(c.name, e.company_name)              as company_name,
              coalesce(c.logo_key, e.company_logo_key)      as logo_key,
              coalesce(c.logo_url, e.company_logo_url)      as logo_url,
-             e.role, e.employment_type, e.location, e.summary,
+             e.role, e.employment_type, e.location, e.summary, e.highlights, e.technologies,
              to_char(e.start_date, 'YYYY-MM-DD') as start_date,
              to_char(e.end_date, 'YYYY-MM-DD')   as end_date,
              e.is_current
@@ -84,6 +88,9 @@ export async function getExperiences(): Promise<Experience[]> {
     summary: r.summary,
     // a logo in the private bucket is served by our own route; otherwise an external URL
     logoUrl: r.logo_key ? mediaUrl(r.logo_key) : url(r.logo_url),
+    id: r.id,
+    highlights: list(r.highlights),
+    technologies: list(r.technologies),
   }));
 }
 
