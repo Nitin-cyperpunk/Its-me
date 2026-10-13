@@ -104,9 +104,14 @@ export default function ProjectSequence({ items }: { items: Project[] }) {
         {items.map((project, i) => (
           <article key={project.name} className={styles.card} data-project>
             <div className={`${s.glass} ${styles.cardInner}`} data-tilt>
-              {/* visual slot: a screenshot or artefact goes here later */}
+              {/* visual slot: the cover image when there is one, otherwise the initial */}
               <div className={styles.visual} aria-hidden="true">
-                <span>{project.name.charAt(0)}</span>
+                {project.coverUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- any host, set in the database
+                  <img src={project.coverUrl} alt="" loading="lazy" decoding="async" draggable={false} />
+                ) : (
+                  <span>{project.name.charAt(0)}</span>
+                )}
               </div>
               <div className={styles.body}>
                 <p className={s.soon}>
@@ -117,6 +122,20 @@ export default function ProjectSequence({ items }: { items: Project[] }) {
                 <p className={s.soon}>
                   {project.stack ? project.stack.join(" · ") : "Case study coming soon"}
                 </p>
+                {(project.liveUrl || project.githubUrl) && (
+                  <p className={styles.links}>
+                    {project.liveUrl && (
+                      <a className={s.focusable} href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+                        Live ↗
+                      </a>
+                    )}
+                    {project.githubUrl && (
+                      <a className={s.focusable} href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                        GitHub ↗
+                      </a>
+                    )}
+                  </p>
+                )}
               </div>
             </div>
           </article>

@@ -126,3 +126,21 @@
     rotate: -3deg;
   }
 }
+
+/* further qualifications (e.g. 12th), listed under the degree once published */
+.others {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--nv-border);
+}
+
+.others li {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.otherTitle {
+  font-weight: var(--weight-subheading);
+}

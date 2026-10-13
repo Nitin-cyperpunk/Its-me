@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 import type { Experience } from "@/content/portfolio";
 import { gsap, type Motion } from "@/lib/animations/gsap";
 import { useSceneAnimation } from "@/lib/animations/scroll";
@@ -66,7 +67,25 @@ export default function ExperienceStack({ roles }: { roles: Experience[] }) {
           <span className={styles.index}>{String(i + 1).padStart(2, "0")}</span>
           <div>
             <p className={s.soon}>{role.kind}</p>
-            <h3 className={styles.company}>{role.company ?? "Company — to be added"}</h3>
+            <h3 className={styles.company}>
+              {role.logoUrl && (
+                <Image
+                  className={styles.logo}
+                  src={role.logoUrl}
+                  alt=""
+                  width={28}
+                  height={28}
+                  // our /media logos are resized by the optimizer (SVGs pass through);
+                  // an external URL is shown as-is rather than allow-listing its host
+                  unoptimized={!role.logoUrl.startsWith("/")}
+                  // missing or broken: drop the tile, the company name still reads fine
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              )}
+              {role.company ?? "Company — to be added"}
+            </h3>
             <p className={styles.meta}>
               {role.role ?? "Role"} · {role.period ?? "Dates"}
             </p>

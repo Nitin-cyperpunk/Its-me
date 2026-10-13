@@ -1,4 +1,5 @@
 import { skills } from "@/content/portfolio";
+import { getSkills } from "@/lib/content";
 import FloatingObject from "@/components/ui/FloatingObject";
 import SectionLabel from "@/components/ui/SectionLabel";
 import SplitHeading from "@/components/ui/SplitHeading";
@@ -7,7 +8,9 @@ import SkillConstellation from "./SkillConstellation";
 import s from "./scenes.module.css";
 import styles from "./skills.module.css";
 
-export default function SkillsSection() {
+// Skills come from the database (lib/content.ts); the heading stays here.
+export default async function SkillsSection() {
+  const items = await getSkills();
   return (
     <Scene id="skills" labelledBy="skills-title" className={styles.skills}>
       <FloatingObject shape="sphere" className={styles.sphere} from="left" depth={0.5} float={10} desktopOnly />
@@ -17,7 +20,7 @@ export default function SkillsSection() {
           <SectionLabel index="05">Skills</SectionLabel>
           <SplitHeading id="skills-title" lines={skills.heading} className={styles.title} />
         </div>
-        <SkillConstellation items={skills.items} />
+        <SkillConstellation items={items} />
       </div>
     </Scene>
   );

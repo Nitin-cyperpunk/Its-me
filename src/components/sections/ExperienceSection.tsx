@@ -1,4 +1,5 @@
 import { experience } from "@/content/portfolio";
+import { getExperiences } from "@/lib/content";
 import FloatingObject from "@/components/ui/FloatingObject";
 import SectionLabel from "@/components/ui/SectionLabel";
 import SplitHeading from "@/components/ui/SplitHeading";
@@ -7,7 +8,9 @@ import Scene from "./Scene";
 import s from "./scenes.module.css";
 import styles from "./experience.module.css";
 
-export default function ExperienceSection() {
+// Roles come from the database (lib/content.ts); the heading and intro stay here.
+export default async function ExperienceSection() {
+  const roles = await getExperiences();
   return (
     <Scene id="experience" labelledBy="experience-title" className={styles.experience} exit={false}>
       {/* Education's ribbon, now lying behind the stack */}
@@ -23,7 +26,7 @@ export default function ExperienceSection() {
           </p>
         </div>
 
-        <ExperienceStack roles={experience.roles} />
+        <ExperienceStack roles={roles} />
       </div>
     </Scene>
   );

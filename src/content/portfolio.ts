@@ -25,6 +25,8 @@ export type Experience = {
   role: string | null;
   period: string | null;
   summary: string | null;
+  /** Company logo (from the database); shown when present. */
+  logoUrl?: string | null;
 };
 
 // Four onsite internships (from the FAQ). Names, roles and dates to be added.
@@ -49,6 +51,10 @@ export type Project = {
   /** Case-study details — null until written. */
   stack: string[] | null;
   href: string | null;
+  /** From the database: cover image and links, shown when present. */
+  coverUrl?: string | null;
+  githubUrl?: string | null;
+  liveUrl?: string | null;
 };
 
 export const projects = {
