@@ -125,3 +125,42 @@
     translate: -50% -50%;
   }
 }
+
+/* --- categories: one constellation at a time --- */
+
+.groups {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tab {
+  cursor: pointer;
+  transition: border-color 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+}
+
+.tab:hover {
+  border-color: var(--nv-border-strong);
+}
+
+.tab[aria-selected="true"] {
+  border-color: var(--nv-accent);
+  background: var(--nv-glass-blue);
+  color: var(--nv-accent);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--nv-accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab {
+    transition: none;
+  }
+}
