@@ -164,3 +164,78 @@
     transition: none;
   }
 }
+
+/* --- brand icons in the chips (theme ink, so they follow light/dark) --- */
+
+.face {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+}
+
+.icon {
+  flex-shrink: 0;
+  width: 1.05em;
+  height: 1.05em;
+  fill: currentColor;
+}
+
+/* --- particle formations (desktop) --- */
+
+.particles {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .particles {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  /* only skills that can take shape invite a click */
+  .node[data-shape] {
+    cursor: pointer;
+  }
+
+  .lines {
+    transition: opacity 0.6s ease;
+  }
+
+  /* the original face transitions, plus opacity for stepping back */
+  .face {
+    transition:
+      opacity 0.6s ease,
+      scale 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+      border-color 0.3s ease,
+      background-color 0.3s ease,
+      box-shadow 0.3s ease,
+      color 0.3s ease;
+  }
+
+  /* a logo is formed: the pattern steps back so the shape reads */
+  .constellation[data-formed] .lines {
+    opacity: 0.12;
+  }
+
+  .constellation[data-formed] .node:not([data-selected]):not([data-active]) .face {
+    opacity: 0.32;
+  }
+
+  .node[data-selected] .face {
+    border-color: var(--nv-accent);
+    background: var(--nv-glass-blue);
+    color: var(--nv-accent);
+    box-shadow: 0 0 28px var(--nv-glow);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lines,
+  .face {
+    transition: none;
+  }
+}

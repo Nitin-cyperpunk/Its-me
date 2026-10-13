@@ -79,6 +79,9 @@ export type Skill = {
   /** Position in the constellation, % of the field. */
   x: number;
   y: number;
+  /** From the database: brand icon (24×24 SVG path), and the shape its particles form when selected. */
+  icon?: { title: string; path: string } | null;
+  shape?: "database" | "icon" | null;
 };
 
 export const skills = {

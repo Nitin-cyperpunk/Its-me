@@ -22,6 +22,7 @@ import {
   type Skill,
 } from "@/content/portfolio";
 import { getDb } from "./db";
+import { skillIcon } from "./skill-icons";
 
 export const CONTENT_TAG = "portfolio-content";
 /** Seconds a read is reused before it's refreshed in the background. */
@@ -167,7 +168,7 @@ function layout(count: number) {
 export async function getSkillGroups(): Promise<SkillGroup[]> {
   const rows = await load("skills", () =>
     sql().query(`
-      select name, category, description
+      select name, category, description, icon
         from skills
        where is_published
        order by display_order, name`),
@@ -175,10 +176,18 @@ export async function getSkillGroups(): Promise<SkillGroup[]> {
   // the built-in constellation keeps its hand-placed layout as a single group
   if (!rows?.length) return [{ category: "Tools", items: builtInSkills.items }];
 
-  const groups = new Map<string, { name: string; note: string }[]>();
+  const groups = new Map<string, Omit<Skill, "x" | "y">[]>();
   for (const r of rows) {
     const list = groups.get(r.category) ?? [];
-    list.push({ name: r.name, note: r.description || r.category });
+    const icon = skillIcon(r.icon);
+    list.push({
+      name: r.name,
+      note: r.description || r.category,
+      icon,
+      // what its particles form when selected: databases share the cylinder,
+      // anything with a brand icon traces that logo, the rest keep the pattern
+      shape: r.category === "Databases" ? "database" : icon ? "icon" : null,
+    });
     groups.set(r.category, list);
   }
   return [...groups].map(([category, list]) => {

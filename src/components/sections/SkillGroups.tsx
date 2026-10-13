@@ -14,7 +14,7 @@ export default function SkillGroups({ groups }: { groups: SkillGroup[] }) {
   const [active, setActive] = useState(0);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  if (groups.length === 1) return <SkillConstellation items={groups[0].items} />;
+  if (groups.length === 1) return <SkillConstellation items={groups[0].items} category={groups[0].category} />;
 
   const select = (index: number) => {
     const next = (index + groups.length) % groups.length;
@@ -61,7 +61,7 @@ export default function SkillGroups({ groups }: { groups: SkillGroup[] }) {
           aria-labelledby={`${id}-tab-${i}`}
           hidden={i !== active}
         >
-          <SkillConstellation items={group.items} />
+          <SkillConstellation items={group.items} category={group.category} />
         </div>
       ))}
     </div>
