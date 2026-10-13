@@ -57,6 +57,7 @@ export const siteConfig = {
   socials: [
     "https://github.com/Nitin-cyperpunk",
     "https://www.linkedin.com/in/itsnitinsingh66/",
+    "https://x.com/nitinverse_twt",
   ],
 };
 

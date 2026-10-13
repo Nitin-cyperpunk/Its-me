@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Host_Grotesk, IBM_Plex_Mono } from "next/font/google";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { Analytics } from "@vercel/analytics/next";
 import SmoothScroll from "@/components/smooth-scroll/SmoothScroll";
 import ThemeToggle from "@/components/theme/ThemeToggle";
 import { education } from "@/content/portfolio";
@@ -145,6 +146,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SmoothScroll />
         <ThemeToggle />
         {children}
+        {/* Vercel Web Analytics: page views, collected only on Vercel deployments */}
+        <Analytics />
       </body>
     </html>
   );

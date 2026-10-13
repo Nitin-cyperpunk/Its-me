@@ -27,14 +27,17 @@ const script = Caveat({
 
 const github = findProfile("github.com");
 const linkedin = findProfile("linkedin.com");
+const x = findProfile("x.com");
 // only a real, configured address is ever linked (see contactEmail in lib/site.ts)
 const email = contactEmail && `mailto:${contactEmail}`;
 
 const links = [
   github && { label: "GitHub", href: github },
   linkedin && { label: "LinkedIn", href: linkedin },
+  // "X" alone is ambiguous to a screen reader
+  x && { label: "X", href: x, ariaLabel: "X (Twitter)" },
   email && { label: "Email", href: email },
-].filter((link): link is { label: string; href: string } => Boolean(link));
+].filter((link): link is { label: string; href: string; ariaLabel?: string } => Boolean(link));
 
 const button =
   "inline-flex min-h-12 items-center gap-2 rounded-full border px-[1.4rem] text-[0.95rem] font-medium transition sm:backdrop-blur-sm duration-250 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-lime motion-reduce:transition-none motion-reduce:hover:translate-y-0";
@@ -91,6 +94,7 @@ export default async function CinematicFooter() {
               {links.map((link) => (
                 <a
                   key={link.label}
+                  aria-label={link.ariaLabel}
                   className={`group ${ghostButton}`}
                   href={link.href}
                   {...(link.href.startsWith("http")
@@ -121,6 +125,7 @@ export default async function CinematicFooter() {
             {links.map((link) => (
               <a
                 key={link.label}
+                aria-label={link.ariaLabel}
                 className="text-mist/80 transition-colors hover:text-lime focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-lime"
                 href={link.href}
                 {...(link.href.startsWith("http")
