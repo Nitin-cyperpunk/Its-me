@@ -72,7 +72,7 @@ export type HeroAsset = ImageAsset | MusicAsset | ProjectAsset;
 
 // The projects section doesn't exist yet. Once it does, give it id="projects"
 // and set this to "#projects" — every artifact becomes a link to it.
-const PROJECTS: string | null = null;
+const PROJECTS: string | null = "#projects";
 
 export const heroAssets: HeroAsset[] = [
   // ---------- coding ----------

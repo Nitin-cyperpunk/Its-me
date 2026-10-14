@@ -122,7 +122,7 @@ export async function getProjects(): Promise<Project[]> {
   const rows = await load("projects", () =>
     sql().query(`
       select slug, title, category, short_description, technologies,
-             cover_image_url, github_url, live_url
+             cover_image_url, logo_url, github_url, live_url
         from projects
        where is_published
        order by is_featured desc, display_order, id`),
@@ -139,6 +139,7 @@ export async function getProjects(): Promise<Project[]> {
       stack: stack.length ? stack : null,
       href: liveUrl ?? githubUrl,
       coverUrl: url(r.cover_image_url),
+      logoUrl: url(r.logo_url),
       githubUrl,
       liveUrl,
     };

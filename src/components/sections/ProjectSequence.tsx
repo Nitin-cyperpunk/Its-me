@@ -117,7 +117,20 @@ export default function ProjectSequence({ items }: { items: Project[] }) {
                 <p className={s.soon}>
                   {String(i + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")} · {project.kind}
                 </p>
-                <h3 className={styles.name}>{project.name}</h3>
+                <div className={styles.titleRow}>
+                  {project.logoUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={project.logoUrl}
+                      alt={`${project.name} logo`}
+                      className={styles.logo}
+                      loading="lazy"
+                      decoding="async"
+                      draggable={false}
+                    />
+                  )}
+                  <h3 className={styles.name}>{project.name}</h3>
+                </div>
                 <p className={styles.summary}>{project.summary}</p>
                 <p className={s.soon}>
                   {project.stack ? project.stack.join(" · ") : "Case study coming soon"}

@@ -55,8 +55,9 @@ export type Project = {
   /** Case-study details — null until written. */
   stack: string[] | null;
   href: string | null;
-  /** From the database: cover image and links, shown when present. */
+  /** From the database: cover image, logo, and links, shown when present. */
   coverUrl?: string | null;
+  logoUrl?: string | null;
   githubUrl?: string | null;
   liveUrl?: string | null;
 };
@@ -64,11 +65,45 @@ export type Project = {
 export const projects = {
   heading: ["Ideas that made", "it out of my head."],
   items: [
-    { name: "Ordra", kind: "SaaS", summary: "Cafe management platform.", stack: null, href: null },
-    { name: "RentSetGo", kind: "SaaS", summary: "Property listing and real-estate platform.", stack: null, href: null },
-    { name: "JobFill", kind: "Chrome extension", summary: "Autofills job application forms.", stack: null, href: null },
-    { name: "n8n workflows", kind: "Automation", summary: "Automation workflows built with n8n.", stack: null, href: null },
-    { name: "AI experiments", kind: "Lab", summary: "Experiments with AI and LLMs.", stack: null, href: null },
+    {
+      name: "Ordra",
+      kind: "SaaS",
+      summary: "A multi-tenant cafe management SaaS platform for orders, menus, billing, analytics and business reporting.",
+      stack: ["Next.js", "TypeScript", "Supabase", "PostgreSQL", "pnpm", "Turborepo"],
+      href: "https://www.ordracafe.app/",
+      logoUrl: "/projects/ordra-logo.png",
+      liveUrl: "https://www.ordracafe.app/",
+    },
+    {
+      name: "JobFill",
+      kind: "Chrome Extension",
+      summary: "A privacy-first Chrome extension that saves your profile locally and autofills job application forms in seconds.",
+      stack: ["TypeScript", "React", "Tailwind CSS", "Vite", "Chrome Extension MV3", "Zod"],
+      href: "https://getjobfill.vercel.app/",
+      logoUrl: "/projects/jobfill-logo.png",
+      githubUrl: "https://github.com/Nitin-cyperpunk/Job-Autofill-Extension",
+      liveUrl: "https://getjobfill.vercel.app/",
+    },
+    {
+      name: "RentSetGo",
+      kind: "SaaS",
+      summary: "A property-listing platform connecting property owners with renters through direct owner contact and neighbourhood-first search.",
+      stack: ["Next.js", "TypeScript", "Supabase", "PostgreSQL", "pnpm", "Tailwind CSS"],
+      href: "https://rentsetgo.vercel.app/",
+      logoUrl: "/projects/rentsetgo-logo.png",
+      githubUrl: "https://github.com/Nitin-cyperpunk/RentSetGo",
+      liveUrl: "https://rentsetgo.vercel.app/",
+    },
+    {
+      name: "AlphaBlock AI",
+      kind: "Client",
+      summary: "A client-facing landing page for an AI-powered intelligence and execution layer for on-chain traders.",
+      stack: ["Next.js", "TypeScript", "Tailwind CSS", "GSAP", "Lenis", "ScrollTrigger"],
+      href: "https://alpha-block-ai-six.vercel.app/",
+      logoUrl: "/projects/alphablock-logo.webp",
+      githubUrl: "https://github.com/Nitin-cyperpunk/-AlphaBlock-AI",
+      liveUrl: "https://alpha-block-ai-six.vercel.app/",
+    },
   ] satisfies Project[],
 };
 

@@ -70,6 +70,20 @@
   padding: clamp(1.5rem, 2.5vw, 2.25rem);
 }
 
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logo {
+  width: 2.5rem;
+  height: 2.5rem;
+  object-fit: contain;
+  border-radius: 0.375rem;
+  flex-shrink: 0;
+}
+
 .name {
   font-family: var(--nv-font-display), sans-serif;
   font-size: clamp(1.8rem, 3.2vw, 3rem);
